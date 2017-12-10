@@ -1,12 +1,16 @@
-const board = document.querySelector('#board');
+const boardHTMLElement = document.querySelector('#board');
 const boardSizeInput = document.querySelector('#boardSizeInput');
 const restartGameButton = document.querySelector('#restartGameButton');
 const numberOfColorsInput = document.querySelector('#numberOfColorsInput');
 const currentScoreOutput = document.querySelector('#currentScoreOutput');
+const nextBallColorHTMLElement = document.querySelector('#nextBallColor');
 
 let boardSize;
 let currentScore = 0;
-let ballColors;
+let ballColors = [];
+let isGameOver = false;
+let board = []; // two dimension array
+let nextBallColor;
 
 restartGameButton.addEventListener('click', ()=>{
     restartGame();
@@ -14,37 +18,55 @@ restartGameButton.addEventListener('click', ()=>{
 
 function drawBoard(){
     // Clear board:
-    while (board.firstChild) {
-        board.removeChild(board.firstChild);
+    while (boardHTMLElement.firstChild) {
+        boardHTMLElement.removeChild(boardHTMLElement.firstChild);
+    }
+    board = [];
+    for(let i=0; i<boardSize; i++){
+        board.push(new Array(boardSize));
     }
 
     // Draw new rows and tiles:
     for(let i=0; i<boardSize; i++){
         const row = document.createElement('div');
         row.classList.add('board__row');
-
         for(let j=0; j<boardSize; j++){
             const tile = document.createElement('div');
             tile.classList.add('board__row__tile');
+            tile.addEventListener('click', onTileClick);
             row.appendChild(tile);
         }
-
-        board.appendChild(row);
+        boardHTMLElement.appendChild(row);
     }
 }
 
 function generateColors(){
-    let firstColorHue = randomInt(0, 360);
-    for(let i=0; i<boardSize; i++){
-        // stopped here
+    const firstColorHue = randomFloat(0, 360);
+    ballColors = [firstColorHue];
+    for(let i=1; i<boardSize; i++){
+        const nextColor = (firstColorHue + 360/boardSize * i) % 360;
+        ballColors.push(nextColor);
+    }
+    nextBallColor = ballColors[Math.floor(Math.random() * ballColors.length)];
+    nextBallColorHTMLElement.style.backgroundColor = `hsl(${nextBallColor}, 80%, 50%)`;
+}
+
+function onTileClick(event){
+    if(isGameOver){
+        return;
     }
 }
 
+function randomFloat(min, max) {
+    return Math.random() * (max - min + 1) + min;
+}
+
 function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function restartGame(){
+    isGameOver = false;
     boardSize = boardSizeInput.value;
     currentScore = 0;
     currentScoreOutput.innerHTML = 0;
