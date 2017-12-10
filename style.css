@@ -1,0 +1,95 @@
+/*
+    #5BC0EB 
+    #FDE74C
+    #9BC53D
+    #E55934
+    #FA7921
+*/
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: Calibri;
+}
+
+body{
+    overflow: hidden;
+}
+
+.board{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 90vmin;
+    width: 90vmin;
+    border: 1px solid black;
+}
+
+.menu{
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    border-right: 2px solid black;
+}
+.menu >*{
+    border-top: 2px solid black;
+    height: 20%;
+    position: relative;
+    width: 100%;
+}
+
+.menu :nth-child(1) {
+    background: #5BC0EB; 
+    border-top: none;
+}
+.menu :nth-child(2) {
+    background: #FDE74C;
+}
+.menu :nth-child(3) {
+    background: #9BC53D;
+}
+.menu :nth-child(4) {
+    background: #E55934;
+}
+.menu :nth-child(5) {
+    background: #FA7921;
+}
+
+.menu .boardSize__input{
+    position: absolute;
+    display: block;
+    background: white;
+    width: 30%;
+    height: 30%;
+    left: 50%;
+    top: 50%;
+    font-size: 24px;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    outline: none;
+    border: none;
+}
+
+
+.menu .header{
+    width: 100%;
+    font-size: 24px;
+    font-weight: normal;
+    text-align: center;
+    background: none;
+}
+
+.menu .restartGameButton{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 60%;
+    height: 30%;
+    transform: translate(-50%, -50%);
+    background: white;
+    font-size: 24px;
+}
