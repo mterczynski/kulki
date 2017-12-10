@@ -14,16 +14,36 @@
 
 body{
     overflow: hidden;
+    background: rgba(2, 204, 255, 0.3);
 }
 
 .board{
-    position: absolute;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;  
     left: 50%;
+    position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    height: 90vmin;
-    width: 90vmin;
-    border: 1px solid black;
+    height: 60vmin;
+    width: 60vmin;
+    background: rgb(230, 230, 230);
+}
+
+.board__row{
+    border-bottom: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    position: relative;
+    width: 100%;  
+}
+
+.board__row__tile{  
+    border-right: 1px solid black;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .menu{
@@ -42,24 +62,24 @@ body{
     width: 100%;
 }
 
-.menu :nth-child(1) {
+.menu >:nth-child(1) {
     background: #5BC0EB; 
     border-top: none;
 }
-.menu :nth-child(2) {
+.menu >:nth-child(2) {
     background: #FDE74C;
 }
-.menu :nth-child(3) {
+.menu >:nth-child(3) {
     background: #9BC53D;
 }
-.menu :nth-child(4) {
+.menu >:nth-child(4) {
     background: #E55934;
 }
-.menu :nth-child(5) {
+.menu >:nth-child(5) {
     background: #FA7921;
 }
 
-.menu .boardSize__input{
+.menu .boardSize__input, .menu .numberOfColors__input{
     position: absolute;
     display: block;
     background: white;
@@ -74,22 +94,47 @@ body{
     border: none;
 }
 
-
 .menu .header{
-    width: 100%;
+    background: none;
     font-size: 24px;
     font-weight: normal;
     text-align: center;
-    background: none;
+    width: 100%;
 }
 
 .menu .restartGameButton{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 60%;
-    height: 30%;
-    transform: translate(-50%, -50%);
     background: white;
     font-size: 24px;
+    height: 30%;   
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%); 
+    width: 60%;  
+}
+
+.menu .currentScoreOutput{
+    font-size: 24px;
+    text-align: center; 
+}
+
+.menu .nextBallColor{
+    background: blue;
+    border-radius: 100px;
+    height: 30%;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+}
+
+.menu .nextBallColor__background{
+    background: rgba(0, 0, 0, 0.75);
+    height: 50%;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
 }
