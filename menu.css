@@ -73,12 +73,11 @@
 .menu .nextBallColor{
     background: blue;
     border-radius: 100px;
-    height: 30%;
     left: 50%;
+    padding: 15%;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 30%;
 }
 
 .menu .nextBallColor__background{
