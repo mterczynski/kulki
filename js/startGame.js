@@ -11,6 +11,7 @@ let ballColors = [];
 let isGameOver = false;
 let board = []; // two dimension array
 let nextBallColor;
+let selectedTile; // tile with selected ball (first click to select, second click to move)
 
 restartGameButton.addEventListener('click', ()=>{
     restartGame();
@@ -75,9 +76,13 @@ function onTileClick(event){
     }
 
     console.log({x: clickedX, y: clickedY});
-    // if(!board[][]){
-
-    // }
+    if(board[clickedX][clickedY]){  // if there is ball on clicked tile
+        // todo: change selection
+    } else { // if there is no ball on clicked tile
+        if(selectedTile){ // if there was previously selected ball
+            // todo: try to move ball there
+        }
+    }
 }
 
 function randomFloat(min, max) {
