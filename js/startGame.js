@@ -59,8 +59,8 @@ function onTileClick(event){
 
     const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
 
-    let clickedX;  // x axis
-    let clickedY;   // y axis 
+    let clickedX; // x axis
+    let clickedY; // y axis 
 
     // get x and y of clicked tile:
     for(let i=0; i<boardSize; i++){
@@ -83,14 +83,6 @@ function onTileClick(event){
             // todo: try to move ball there
         }
     }
-}
-
-function randomFloat(min, max) {
-    return Math.random() * (max - min + 1) + min;
-}
-
-function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function restartGame(){
