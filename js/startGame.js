@@ -17,6 +17,14 @@ restartGameButton.addEventListener('click', ()=>{
     restartGame();
 });
 
+function addNewBall(x, y){
+    const ballElement = document.createElement('div');
+    ballElement.classList.add('ball');
+    ballElement.style.background = getRandomBallColor();
+    boardHTMLElement.querySelectorAll(':scope >*').childNodes[y].childNodes[x];
+    boardHTMLElement.appendChild(ballElement);
+}
+
 function drawBoard(){
     // Clear board:
     while (boardHTMLElement.firstChild) {
@@ -76,11 +84,23 @@ function onTileClick(event){
     }
 
     console.log({x: clickedX, y: clickedY});
-    if(board[clickedX][clickedY]){  // if there is ball on clicked tile
-        // todo: change selection
+    if(board[clickedX][clickedY]){  // if there is ball on clicked tile: change selection
+        // remove selection from all tiles:
+        document.querySelectorAll('.board__row__tile').forEach((el)=>{
+            el.classList.remove('selected');
+        });
+        // change selected tile, add css class
+        selectedTile = {x: clickedX, y: clickedY, htmlElement: event.target};
+        selectedTile.htmlElement.classList.add('selected');
     } else { // if there is no ball on clicked tile
-        if(selectedTile){ // if there was previously selected ball
-            // todo: try to move ball there
+        if(selectedTile){ // move, check if 5 in line
+            // todo: move
+            // todo: check if at least 5 in line
+        } else { // add new ball on clicked tile, random 3 new balls, check for lose
+            // todo: add new ball
+            addNewBall(clickedX, clickedY);
+            // todo: add 3 new random balls
+            // todo: check for lose
         }
     }
 }
