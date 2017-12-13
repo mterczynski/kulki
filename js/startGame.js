@@ -20,14 +20,16 @@ restartGameButton.addEventListener('click', ()=>{
 
 function addNewBall(x, y){
     const ballElement = document.createElement('div');
+    const ballColor = getRandomBallColor();
     ballElement.classList.add('ball');
-    ballElement.style.background = getRandomBallColor();
+    ballElement.style.background = ballColor;
     const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
     if(tile.childNodes.length > 0){
-        return false;
+        return false;   // if tile is busy stop function, return false
     }
     tile.appendChild(ballElement);
     numberOfBusyTiles++;
+    board[x][y] = ballColor;
     return true;
 }
 
@@ -71,6 +73,11 @@ function onTileClick(event){
         return;
     }
 
+    let target = event.target;
+    if(event.target.classList.contains('ball')){
+        target = target.parentNode;
+    }
+
     const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
 
     let clickedX; // x axis
@@ -78,32 +85,30 @@ function onTileClick(event){
 
     // get x and y of clicked tile:
     for(let i=0; i<boardSize; i++){
-        if(event.target.parentNode === boardRows[i]){
+        if(target.parentNode === boardRows[i]){
             clickedY = i;
             const row = boardRows[i];
             for(let j=0; j<boardSize; j++){
-                if(row.childNodes[j] === event.target){
+                if(row.childNodes[j] === target){
                     clickedX = j
                 }
             }
         }  
     }
 
-    console.log({x: clickedX, y: clickedY});
     if(board[clickedX][clickedY]){  // if there is ball on clicked tile: change selection
         // remove selection from all tiles:
         document.querySelectorAll('.board__row__tile').forEach((el)=>{
             el.classList.remove('selected');
         });
         // change selected tile, add css class
-        selectedTile = {x: clickedX, y: clickedY, htmlElement: event.target};
+        selectedTile = {x: clickedX, y: clickedY, htmlElement: target};
         selectedTile.htmlElement.classList.add('selected');
     } else { // if there is no ball on clicked tile
         if(selectedTile){ // move, check if 5 in line
             // todo: move
             // todo: check if at least 5 in line
         } else { // add new ball on clicked tile, random 3 new balls, check for lose
-            // todo: add new ball
             addNewBall(clickedX, clickedY);
             // todo: add 3 new random balls
             // todo: check for lose
