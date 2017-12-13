@@ -12,6 +12,7 @@ let isGameOver = false;
 let board = []; // two dimension array
 let nextBallColor;
 let selectedTile; // tile with selected ball (first click to select, second click to move)
+let numberOfBusyTiles = 0;
 
 restartGameButton.addEventListener('click', ()=>{
     restartGame();
@@ -21,8 +22,13 @@ function addNewBall(x, y){
     const ballElement = document.createElement('div');
     ballElement.classList.add('ball');
     ballElement.style.background = getRandomBallColor();
-    boardHTMLElement.querySelectorAll(':scope >*').childNodes[y].childNodes[x];
-    boardHTMLElement.appendChild(ballElement);
+    const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
+    if(tile.childNodes.length > 0){
+        return false;
+    }
+    tile.appendChild(ballElement);
+    numberOfBusyTiles++;
+    return true;
 }
 
 function drawBoard(){
