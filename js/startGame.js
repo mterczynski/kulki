@@ -13,6 +13,7 @@ let board = []; // two dimension array
 let nextBallColors = [];
 let selectedTile; // tile with selected ball (first click to select, second click to move)
 let numberOfBusyTiles = 0;
+let numberOfColors;
 
 restartGameButton.addEventListener('click', ()=>{
     restartGame();
@@ -20,7 +21,8 @@ restartGameButton.addEventListener('click', ()=>{
 
 function addNewBall(x, y){
     const ballElement = document.createElement('div');
-    const ballColor = getRandomBallColor();
+    const ballColor = `hsl(${ballColors[Math.floor(Math.random() * ballColors.length)]}, 80%, 50%)`;
+    console.log(ballColor)
     ballElement.classList.add('ball');
     ballElement.style.background = ballColor;
     const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
@@ -60,8 +62,8 @@ function drawBoard(){
 function generateColors(){
     const firstColorHue = randomFloat(0, 360);
     ballColors = [firstColorHue];
-    for(let i=1; i<boardSize; i++){
-        const nextColor = (firstColorHue + 360/boardSize * i) % 360;
+    for(let i=1; i<numberOfColors; i++){
+        const nextColor = (firstColorHue + 360/numberOfColors * i) % 360;
         ballColors.push(nextColor);
     }
     nextBallColors = [];
@@ -70,6 +72,7 @@ function generateColors(){
         nextBallColors.push(nextBallColor);
         nextBallColorHTMLElements[i].style.backgroundColor = `hsl(${nextBallColor}, 80%, 50%)`;
     }
+    console.log(ballColors);
 }
 
 function onTileClick(event){
@@ -119,9 +122,18 @@ function onTileClick(event){
 function restartGame(){
     isGameOver = false;
     boardSize = boardSizeInput.valueAsNumber;
+    numberOfColors = numberOfColorsInput.valueAsNumber;
     currentScore = 0;
     currentScoreOutput.innerHTML = 0;
     generateColors();
-
     drawBoard();
+    for(let i=0; i<3; i++){
+        while(true){
+            let x = randomInt(0, boardSize-1);
+            let y = randomInt(0, boardSize-1);
+            if(addNewBall(x,y)){
+                break;
+            }
+        }
+    }
 }
