@@ -112,11 +112,7 @@ function onTileClick(event){
         if(selectedTile){ // move, check if 5 in line
             // todo: move
             // todo: check if at least 5 in line
-        } else { // add new ball on clicked tile, random 3 new balls, check for lose
-            addNewBall(clickedX, clickedY);
-            // todo: add 3 new random balls
-            // todo: check for lose
-        }
+        } 
     }
 }
 
