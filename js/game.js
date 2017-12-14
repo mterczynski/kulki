@@ -84,12 +84,9 @@ function onTileClick(event){
         return;
     }
 
-    let target = event.target;
-    if(event.target.classList.contains('ball')){
-        target = target.parentNode;
-    }
+    const tile = getTileFromEventTarget(event.target);
 
-    let clickedPos = getTilePosition(target);
+    let clickedPos = getTilePosition(tile);
 
     if(board[clickedPos.x][clickedPos.y]){  // if there is ball on clicked tile: change selection
         // remove selection from all tiles:
@@ -97,7 +94,7 @@ function onTileClick(event){
             el.classList.remove('selected');
         });
         // change selected tile, add css class
-        selectedTile = {x: clickedPos.x, y: clickedPos.y, htmlElement: target};
+        selectedTile = {x: clickedPos.x, y: clickedPos.y, htmlElement: tile};
         selectedTile.htmlElement.classList.add('selected');
     } else { // if there is no ball on clicked tile
         if(selectedTile){ // move, check if 5 in line
@@ -110,7 +107,8 @@ function onTileClick(event){
 
 function onTileHover(event){
     if(selectedTile && event.target.childNodes.length == 0 && !event.target.classList.contains('ball')){  // and if selected tile has no ball
-        drawPath(selectedTile)
+        const tile = getTileFromEventTarget(event.target);
+        drawPath(selectedTile, getTilePosition(tile));
     }
 }
 

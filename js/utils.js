@@ -4,7 +4,7 @@ function getRandomBallColor(){
 
 function getTilePosition(tile){
     const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
-    
+
     let x;
     let y;
 
@@ -20,6 +20,14 @@ function getTilePosition(tile){
         }  
     }
     return {x, y};
+}
+
+function getTileFromEventTarget(eventTarget){
+    let tile = eventTarget;
+    if(tile.classList.contains('ball')){
+        tile = tile.parentNode;
+    }
+    return tile;
 }
 
 function randomFloat(min, max) {
