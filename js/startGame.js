@@ -3,14 +3,14 @@ const boardSizeInput = document.querySelector('#boardSizeInput');
 const restartGameButton = document.querySelector('#restartGameButton');
 const numberOfColorsInput = document.querySelector('#numberOfColorsInput');
 const currentScoreOutput = document.querySelector('#currentScoreOutput');
-const nextBallColorHTMLElement = document.querySelector('#nextBallColor');
+const nextBallColorHTMLElements = document.querySelectorAll('.nextBallColor');
 
 let boardSize;
 let currentScore = 0;
 let ballColors = [];
 let isGameOver = false;
 let board = []; // two dimension array
-let nextBallColor;
+let nextBallColors = [];
 let selectedTile; // tile with selected ball (first click to select, second click to move)
 let numberOfBusyTiles = 0;
 
@@ -64,8 +64,12 @@ function generateColors(){
         const nextColor = (firstColorHue + 360/boardSize * i) % 360;
         ballColors.push(nextColor);
     }
-    nextBallColor = ballColors[Math.floor(Math.random() * ballColors.length)];
-    nextBallColorHTMLElement.style.backgroundColor = `hsl(${nextBallColor}, 80%, 50%)`;
+    nextBallColors = [];
+    for(let i=0; i<3; i++){
+        const nextBallColor = ballColors[Math.floor(Math.random() * ballColors.length)];
+        nextBallColors.push(nextBallColor);
+        nextBallColorHTMLElements[i].style.backgroundColor = `hsl(${nextBallColor}, 80%, 50%)`;
+    }
 }
 
 function onTileClick(event){
