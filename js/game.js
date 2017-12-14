@@ -5,6 +5,8 @@ const numberOfColorsInput = document.querySelector('#numberOfColorsInput');
 const currentScoreOutput = document.querySelector('#currentScoreOutput');
 const nextBallColorHTMLElements = document.querySelectorAll('.nextBallColor');
 
+const aStarFinder = new AStarFinder();
+
 let boardSize;
 let currentScore = 0;
 let ballColors = [];
@@ -60,8 +62,10 @@ function drawBoard(){
 }
 
 function drawPath(from, to){
-    console.log('from', from);
-    console.log('to', to);
+    // console.log('from', from);
+    // console.log('to', to);
+
+    aStarFinder.findPath(board, from, to, {x: boardSize, y:boardSize});
 }
 
 function generateColors(){
