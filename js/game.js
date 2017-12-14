@@ -22,7 +22,6 @@ restartGameButton.addEventListener('click', ()=>{
 function addNewBall(x, y){
     const ballElement = document.createElement('div');
     const ballColor = `hsl(${ballColors[Math.floor(Math.random() * ballColors.length)]}, 80%, 50%)`;
-    console.log(ballColor)
     ballElement.classList.add('ball');
     ballElement.style.background = ballColor;
     const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
@@ -53,10 +52,16 @@ function drawBoard(){
             const tile = document.createElement('div');
             tile.classList.add('board__row__tile');
             tile.addEventListener('click', onTileClick);
+            tile.addEventListener('mouseover', onTileHover);            
             row.appendChild(tile);
         }
         boardHTMLElement.appendChild(row);
     }
+}
+
+function drawPath(from, to){
+    console.log('from', from);
+    console.log('to', to);
 }
 
 function generateColors(){
@@ -72,7 +77,6 @@ function generateColors(){
         nextBallColors.push(nextBallColor);
         nextBallColorHTMLElements[i].style.backgroundColor = `hsl(${nextBallColor}, 80%, 50%)`;
     }
-    console.log(ballColors);
 }
 
 function onTileClick(event){
@@ -85,37 +89,28 @@ function onTileClick(event){
         target = target.parentNode;
     }
 
-    const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
+    let clickedPos = getTilePosition(target);
 
-    let clickedX; // x axis
-    let clickedY; // y axis 
-
-    // get x and y of clicked tile:
-    for(let i=0; i<boardSize; i++){
-        if(target.parentNode === boardRows[i]){
-            clickedY = i;
-            const row = boardRows[i];
-            for(let j=0; j<boardSize; j++){
-                if(row.childNodes[j] === target){
-                    clickedX = j
-                }
-            }
-        }  
-    }
-
-    if(board[clickedX][clickedY]){  // if there is ball on clicked tile: change selection
+    if(board[clickedPos.x][clickedPos.y]){  // if there is ball on clicked tile: change selection
         // remove selection from all tiles:
         document.querySelectorAll('.board__row__tile').forEach((el)=>{
             el.classList.remove('selected');
         });
         // change selected tile, add css class
-        selectedTile = {x: clickedX, y: clickedY, htmlElement: target};
+        selectedTile = {x: clickedPos.x, y: clickedPos.y, htmlElement: target};
         selectedTile.htmlElement.classList.add('selected');
     } else { // if there is no ball on clicked tile
         if(selectedTile){ // move, check if 5 in line
             // todo: move
             // todo: check if at least 5 in line
+            // todo: check for loss
         } 
+    }
+}
+
+function onTileHover(event){
+    if(selectedTile && event.target.childNodes.length == 0 && !event.target.classList.contains('ball')){  // and if selected tile has no ball
+        drawPath(selectedTile)
     }
 }
 
