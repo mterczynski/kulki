@@ -66,8 +66,29 @@ function drawPath(from, to){
     // console.log('from', from);
     // console.log('to', to);
     let path = aStarFinder.findPath(board, from, to, {x: boardSize, y:boardSize});
+
+    const tiles = [];
     
-    
+    Array.from(boardHTMLElement.children).forEach((row)=>{
+        const rowArray = [];
+        Array.from(row.children).forEach((tile)=>{
+            rowArray.push(tile);
+            tile.classList.remove('openList');
+            tile.classList.remove('closedList');
+        });
+        tiles.push(rowArray);
+    });
+    // paint open list:
+    path.openList.forEach((tile)=>{
+        tiles[tile.x][tile.y].classList.add('openList');
+    })
+
+    // paint closed list:
+    path.closedList.forEach((tile)=>{
+        tiles[tile.x][tile.y].classList.add('closedList');
+    });
+
+    console.log('closedList size: ' + path.closedList.length)
 }
 
 function generateColors(){

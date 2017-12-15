@@ -58,3 +58,11 @@ body{
 .board__row__tile.selected{  
     background: black;
 }
+
+.board__row__tile.openList{  
+    background: rgb(0, 163, 0) !important;
+}
+
+.board__row__tile.closedList{  
+    background: rgb(163, 0, 0) !important;
+}

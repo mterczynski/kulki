@@ -55,7 +55,6 @@ function AStarFinder(){
         let iters = 0;
 
         while(true){
-            console.log('before breakpoint')
 
             if(openList.length == 0){
                 console.log('null: open list is empty')
@@ -78,8 +77,8 @@ function AStarFinder(){
             if(currentPos.x == targetPos.x && currentPos.y == targetPos.y){
                 // todo: compute and return path
                 console.log('path found')
-                console.log(openList);
-                console.log(closedList)
+                // console.log(openList);
+                // console.log(closedList)
                 return {success: true, openList, closedList};
             }
 
