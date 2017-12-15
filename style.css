@@ -60,9 +60,9 @@ body{
 }
 
 .board__row__tile.openList{  
-    background: rgb(0, 163, 0) !important;
+    background: rgb(0, 163, 0);
 }
 
 .board__row__tile.closedList{  
-    background: rgb(163, 0, 0) !important;
+    background: rgb(163, 0, 0);
 }
