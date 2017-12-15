@@ -62,10 +62,12 @@ function drawBoard(){
 }
 
 function drawPath(from, to){
+    const boardRows = boardHTMLElement.childNodes;
     // console.log('from', from);
     // console.log('to', to);
-
-    aStarFinder.findPath(board, from, to, {x: boardSize, y:boardSize});
+    let path = aStarFinder.findPath(board, from, to, {x: boardSize, y:boardSize});
+    
+    
 }
 
 function generateColors(){
