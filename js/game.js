@@ -11,10 +11,10 @@ let boardSize;
 let currentScore = 0;
 let ballColors = [];
 let isGameOver = false;
-let board = []; // two dimension array
+let board = []; // two-dimensional array of colors
 let nextBallColors = [];
 let selectedTile; // tile with selected ball (first click to select, second click to move)
-let numberOfBusyTiles = 0;
+// let numberOfBusyTiles = 0;
 let numberOfColors;
 
 restartGameButton.addEventListener('click', ()=>{
@@ -31,7 +31,7 @@ function addNewBall(x, y){
         return false;   // if tile is busy stop function, return false
     }
     tile.appendChild(ballElement);
-    numberOfBusyTiles++;
+    // numberOfBusyTiles++;
     board[x][y] = ballColor;
     return true;
 }
@@ -80,15 +80,16 @@ function drawPath(from, to){
     });
     // paint open list:
     path.openList.forEach((tile)=>{
-        tiles[tile.x][tile.y].classList.add('openList');
+        tiles[tile.y][tile.x].classList.add('openList');
     })
 
     // paint closed list:
     path.closedList.forEach((tile)=>{
-        tiles[tile.x][tile.y].classList.add('closedList');
+        tiles[tile.y][tile.x].classList.add('closedList');
     });
 
-    console.log('closedList size: ' + path.closedList.length)
+    // console.log('closedList size: ' + path.closedList.length)
+    console.log(path.closedList)
 }
 
 function generateColors(){
@@ -98,6 +99,7 @@ function generateColors(){
         const nextColor = (firstColorHue + 360/numberOfColors * i) % 360;
         ballColors.push(nextColor);
     }
+    // random colors for next turn, todo change to 4
     nextBallColors = [];
     for(let i=0; i<3; i++){
         const nextBallColor = ballColors[Math.floor(Math.random() * ballColors.length)];
@@ -133,7 +135,8 @@ function onTileClick(event){
 }
 
 function onTileHover(event){
-    if(selectedTile && event.target.childNodes.length == 0 && !event.target.classList.contains('ball')){  // and if selected tile has no ball
+    // if there is selected tile and target has no child(tile with no ball) and target is not ball:
+    if(selectedTile && event.target.childNodes.length == 0 && !event.target.classList.contains('ball')){ 
         const tile = getTileFromEventTarget(event.target);
         drawPath(selectedTile, getTilePosition(tile));
     }
@@ -147,6 +150,7 @@ function restartGame(){
     currentScoreOutput.innerHTML = 0;
     generateColors();
     drawBoard();
+    // add 3 balls to the board:
     for(let i=0; i<3; i++){
         while(true){
             let x = randomInt(0, boardSize-1);

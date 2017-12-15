@@ -1,6 +1,6 @@
 function AStarFinder(){
     // Manhattan heuristic:
-    function getEstimate(from, to){
+    function getEstimate(from, to){  
         return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
     }
 
@@ -23,7 +23,7 @@ function AStarFinder(){
                                 y: tilePos.y,
                                 estimate: getEstimate(tilePos, targetPos),
                                 travelCost: currentTravelCost + 1
-                            });                            
+                            });                           
                         }
                     }           
                 }
@@ -52,6 +52,9 @@ function AStarFinder(){
             openList.push(el);
         }); 
 
+        // console.log('adjacentTiles:')
+        // console.log(adjacentTiles);
+
         let iters = 0;
 
         while(true){
@@ -65,6 +68,12 @@ function AStarFinder(){
                 return getTileScore(a) > getTileScore(b);
             })[0];
 
+            // console.log('open list:')
+            // console.log(JSON.parse(JSON.stringify(openList)))
+
+            // console.log('best tile from open list:')
+            // console.log(bestTileFromOpenList)
+
             if(!bestTileFromOpenList){
                 console.log('null: no best tile')
                 return {success: false, openList, closedList};
@@ -72,7 +81,10 @@ function AStarFinder(){
 
             currentPos = bestTileFromOpenList;
             // remove bestTile from open list and it to closed list
-            closedList.push(openList.pop());
+           
+            // console.log('closed list:')
+            // console.log(closedList)
+            closedList.push(openList.shift());
            
             if(currentPos.x == targetPos.x && currentPos.y == targetPos.y){
                 // todo: compute and return path
@@ -89,11 +101,13 @@ function AStarFinder(){
             iters++;
 
             if(iters>300){
-                console.log('path not found')
+                console.log('path not found, too much iters')
                 return {success: false, openList, closedList};
             }
         }
 
         return {success: false, openList, closedList};
     }
+
+    this.getFreeAdjacentTiles = getFreeAdjacentTiles;
 }
