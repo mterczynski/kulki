@@ -35,6 +35,16 @@ function AStarFinder(){
         return adjacentTiles;
     }
 
+    function addUniquePointToArray(point, array){
+        if(array.filter((el)=>{
+            return el.x == point.x && el.y == point.y;
+        }).length == 0){
+            array.push(point);
+            return true;
+        } 
+        return false;
+    }
+
     this.findPath = (array, from, targetPos, arraySize) =>{   
         if(from.x == targetPos.x && from.y == targetPos.y){
             return {success: false, openList:[], closedList:[]};
@@ -48,8 +58,8 @@ function AStarFinder(){
         
         // add adjacent tiles to open list:
         const adjacentTiles = getFreeAdjacentTiles(currentPos, array, 0, arraySize, targetPos);
-        adjacentTiles.forEach((el)=>{
-            openList.push(el);
+        adjacentTiles.forEach((el)=>{ 
+            openList.push(el); 
         }); 
 
         // console.log('adjacentTiles:')
@@ -84,8 +94,10 @@ function AStarFinder(){
            
             // console.log('closed list:')
             // console.log(closedList)
-            closedList.push(openList.shift());
-           
+
+            // closedList.push(openList.shift());
+            addUniquePointToArray(openList.shift(), closedList);
+
             if(currentPos.x == targetPos.x && currentPos.y == targetPos.y){
                 // todo: compute and return path
                 console.log('path found')
@@ -97,7 +109,18 @@ function AStarFinder(){
             // get adjacent tiles
             // todo get tile travelcost
             const adjacentTiles = getFreeAdjacentTiles(currentPos, array, getEstimate(from, currentPos), arraySize, targetPos);
-            openList = [...adjacentTiles, ...openList];
+
+            // if tile is not already in the open list, add it
+            adjacentTiles.forEach((adjTile)=>{
+                if(openList.filter((openListElement)=>{
+                    return (openListElement.x == adjTile.x && openListElement.y == adjTile.y);
+                }).length == 0){
+                    openList.push(adjTile);
+                }  else {
+                    console.log(' fount reduntant')
+                }
+            });
+        
             iters++;
 
             if(iters>300){
