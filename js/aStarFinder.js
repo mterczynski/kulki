@@ -85,7 +85,7 @@ function AStarFinder(){
             }
 
             let bestTileFromOpenList = openList.sort((a,b)=>{
-                return getTileScore(a) > getTileScore(b);
+                return getTileScore(a) - getTileScore(b);
             })[0];
 
             console.log('open list:')
@@ -103,16 +103,17 @@ function AStarFinder(){
             console.log('bestTileFromOpenList: ');
             console.log(bestTileFromOpenList);
             
-            // remove bestTile from open list and it to closed list
-           
             // console.log('closed list:')
             // console.log(closedList)
 
+
+            // remove bestTile from open list and it to closed list
             // closedList.push(openList.shift());
-            addUniquePointToArray(openList.shift(), closedList);
+            closedList.push(openList.shift());
 
             if(currentPos.x == targetPos.x && currentPos.y == targetPos.y){
                 // todo: compute and return path
+                // closedList.push(targetPos);
                 console.log('path found')
                 // console.log(openList);
                 // console.log(closedList)
