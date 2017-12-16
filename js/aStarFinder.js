@@ -1,3 +1,5 @@
+// todo improve algorithm number of iterations(if many best tiles, choose last)
+
 function AStarFinder(){
     // Manhattan heuristic:
     function getEstimate(from, to){  
@@ -122,16 +124,7 @@ function AStarFinder(){
 
             // get adjacent tiles
             const adjacentTiles = getFreeAdjacentTiles(currentPos, array, getEstimate(from, currentPos), arraySize, targetPos);
-
-            // if tile is not  in the open list, add it
-
-            /*
-                todo:
-                If T is in the closed list: Ignore it.
-                If T is not in the open list: Add it and compute its score.
-                If T is already in the open list: Check if the F score is lower when we use the current generated path to get there. If it is, update its score and update its parent as well.
-            */
-            
+         
             adjacentTiles.forEach((adjTile)=>{
                 // addUniquePointToArray(adjTile, openList);
                 
