@@ -45,6 +45,16 @@ function AStarFinder(){
         return false;
     }
 
+    function checkIfPointInList(point, list){
+        if(list.filter((el)=>{
+            return el.x == point.x && point.y == el.y;
+        }).length > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     this.findPath = (array, from, targetPos, arraySize) =>{   
         if(from.x == targetPos.x && from.y == targetPos.y){
             return {success: false, openList:[], closedList:[]};
@@ -78,8 +88,8 @@ function AStarFinder(){
                 return getTileScore(a) > getTileScore(b);
             })[0];
 
-            // console.log('open list:')
-            // console.log(JSON.parse(JSON.stringify(openList)))
+            console.log('open list:')
+            console.log(JSON.parse(JSON.stringify(openList)))
 
             // console.log('best tile from open list:')
             // console.log(bestTileFromOpenList)
@@ -90,6 +100,9 @@ function AStarFinder(){
             }
 
             currentPos = bestTileFromOpenList;
+            console.log('bestTileFromOpenList: ');
+            console.log(bestTileFromOpenList);
+            
             // remove bestTile from open list and it to closed list
            
             // console.log('closed list:')
@@ -107,13 +120,34 @@ function AStarFinder(){
             }
 
             // get adjacent tiles
-            // todo get tile travelcost
             const adjacentTiles = getFreeAdjacentTiles(currentPos, array, getEstimate(from, currentPos), arraySize, targetPos);
 
-            // if tile is not already in the open list, add it
+            // if tile is not  in the open list, add it
+
+            /*
+                todo:
+                If T is in the closed list: Ignore it.
+                If T is not in the open list: Add it and compute its score.
+                If T is already in the open list: Check if the F score is lower when we use the current generated path to get there. If it is, update its score and update its parent as well.
+            */
             
             adjacentTiles.forEach((adjTile)=>{
-                addUniquePointToArray(adjTile, openList);
+                // addUniquePointToArray(adjTile, openList);
+                
+                // 1. if tile is in the closed list, ignore it
+                if(checkIfPointInList(adjTile, closedList)){
+                    // ignore this tile
+                } 
+                // 2. if tile is not in the open list: add it to open list.
+                else if(!checkIfPointInList(adjTile, openList)){
+                    // todo add to open list
+                    addUniquePointToArray(adjTile, openList);
+                }
+                // 3. if title is in the open list: Check if the F score is lower when we use the current generated path to get there. If it is, update its score and update its parent as well.
+                else {
+                    // todo
+                    // (?) optional if we dont need shortest path
+                }
             });
         
             iters++;
