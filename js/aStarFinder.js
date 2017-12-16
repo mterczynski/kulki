@@ -111,14 +111,9 @@ function AStarFinder(){
             const adjacentTiles = getFreeAdjacentTiles(currentPos, array, getEstimate(from, currentPos), arraySize, targetPos);
 
             // if tile is not already in the open list, add it
+            
             adjacentTiles.forEach((adjTile)=>{
-                if(openList.filter((openListElement)=>{
-                    return (openListElement.x == adjTile.x && openListElement.y == adjTile.y);
-                }).length == 0){
-                    openList.push(adjTile);
-                }  else {
-                    console.log(' fount reduntant')
-                }
+                addUniquePointToArray(adjTile, openList);
             });
         
             iters++;
