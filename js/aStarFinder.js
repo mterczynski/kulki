@@ -37,6 +37,13 @@ function AStarFinder(){
         return adjacentTiles;
     }
 
+    function getAdjacentFromClosedList(closedList, currentPos){
+        return closedList.filter((tile)=>{
+            return Math.abs(tile.x - currentPos.x) == 1 && Math.abs(tile.y - currentPos.y) == 0 ||
+            Math.abs(tile.x - currentPos.x) == 0 && Math.abs(tile.y - currentPos.y) == 1;
+        });
+    }
+
     function addUniquePointToArray(point, array){
         if(array.filter((el)=>{
             return el.x == point.x && el.y == point.y;
@@ -62,6 +69,8 @@ function AStarFinder(){
             return {success: false, openList:[], closedList:[]};
         }
 
+        from.travelCost = 0;
+
         const closedList = [];
         let openList = [];    
         closedList.push(from);
@@ -74,11 +83,6 @@ function AStarFinder(){
             openList.push(el); 
         }); 
 
-        // console.log('adjacentTiles:')
-        // console.log(adjacentTiles);
-
-        let iters = 0;
-
         while(true){
 
             if(openList.length == 0){
@@ -90,51 +94,52 @@ function AStarFinder(){
                 return getTileScore(a) - getTileScore(b);
             })[0];
 
-            console.log('open list:')
-            console.log(JSON.parse(JSON.stringify(openList)))
-
-            // console.log('best tile from open list:')
-            // console.log(bestTileFromOpenList)
-
             if(!bestTileFromOpenList){
                 console.log('null: no best tile')
                 return {success: false, openList, closedList};
             }
 
             currentPos = bestTileFromOpenList;
-            console.log('bestTileFromOpenList: ');
-            console.log(bestTileFromOpenList);
-            
-            // console.log('closed list:')
-            // console.log(closedList)
-
 
             // remove bestTile from open list and it to closed list
-            // closedList.push(openList.shift());
             closedList.push(openList.shift());
 
             if(currentPos.x == targetPos.x && currentPos.y == targetPos.y){
-                // todo: compute and return path
-                // closedList.push(targetPos);
-                console.log('path found')
-                // console.log(openList);
-                // console.log(closedList)
-                return {success: true, openList, closedList};
+                // compute and return final path:
+                const finalPath = [currentPos];
+
+                let iters = 1;
+                while(!(currentPos.x == from.x && currentPos.y == from.y)){
+                    iters++;
+
+                    const adjacentTiles = getAdjacentFromClosedList(closedList, currentPos);
+
+                    const someResult = adjacentTiles.some((tile)=>{
+                        if(currentPos.travelCost - 1 == tile.travelCost){
+                            finalPath.push(tile);
+                            currentPos = tile;
+                            return true;
+                        }
+                    });
+
+                    if(!someResult){
+                        throw new Error('A* error');
+                    }
+                }
+
+                return {success: true, openList, closedList, finalPath};
             }
 
             // get adjacent tiles
             const adjacentTiles = getFreeAdjacentTiles(currentPos, array, getEstimate(from, currentPos), arraySize, targetPos);
          
-            adjacentTiles.forEach((adjTile)=>{
-                // addUniquePointToArray(adjTile, openList);
-                
+            adjacentTiles.forEach((adjTile)=>{  
                 // 1. if tile is in the closed list, ignore it
                 if(checkIfPointInList(adjTile, closedList)){
-                    // ignore this tile
+                    // do nothing
                 } 
                 // 2. if tile is not in the open list: add it to open list.
                 else if(!checkIfPointInList(adjTile, openList)){
-                    // todo add to open list
                     addUniquePointToArray(adjTile, openList);
                 }
                 // 3. if title is in the open list: Check if the F score is lower when we use the current generated path to get there. If it is, update its score and update its parent as well.
@@ -143,13 +148,6 @@ function AStarFinder(){
                     // (?) optional if we dont need shortest path
                 }
             });
-        
-            iters++;
-
-            if(iters>300){
-                console.log('path not found, too much iters')
-                return {success: false, openList, closedList};
-            }
         }
 
         return {success: false, openList, closedList};

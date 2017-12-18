@@ -67,14 +67,17 @@ function drawPath(from, to){
     // console.log('to', to);
     let path = aStarFinder.findPath(board, from, to, {x: boardSize, y:boardSize});
 
+
+    // paint:
+
     const tiles = [];
-    
     Array.from(boardHTMLElement.children).forEach((row)=>{
         const rowArray = [];
         Array.from(row.children).forEach((tile)=>{
             rowArray.push(tile);
             tile.classList.remove('openList');
             tile.classList.remove('closedList');
+            tile.classList.remove('finalPath');
         });
         tiles.push(rowArray);
     });
@@ -88,8 +91,13 @@ function drawPath(from, to){
         tiles[tile.y][tile.x].classList.add('closedList');
     });
 
+    // paint finalPath:
+    path.finalPath.forEach((tile)=>{
+        tiles[tile.y][tile.x].classList.add('finalPath');
+    });
+
     // console.log('closedList size: ' + path.closedList.length)
-    console.log(path.closedList)
+    console.log(path.finalPath)
 }
 
 function generateColors(){

@@ -66,3 +66,7 @@ body{
 .board__row__tile.closedList{  
     background: rgb(163, 0, 0);
 }
+
+.board__row__tile.finalPath{  
+    background: rgb(0, 132, 255);
+}
