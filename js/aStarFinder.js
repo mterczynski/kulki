@@ -1,5 +1,3 @@
-// todo improve algorithm number of iterations(if many best tiles, choose last)
-
 function AStarFinder(){
     // Manhattan heuristic:
     function getEstimate(from, to){  
@@ -69,7 +67,6 @@ function AStarFinder(){
             return {success: false, openList:[], closedList:[]};
         }
 
-        
         let openList = [];    
         let currentPos = {x:from.x, y:from.y, travelCost: 0};
         const closedList = [currentPos];
@@ -79,13 +76,10 @@ function AStarFinder(){
         adjacentTiles.forEach((el)=>{ 
             openList.push(el); 
         }); 
-
-        while(true){
+        
+        while(!openList.length == 0){
             // 1. if openList is empty -> no more field to check -> no path
-            if(openList.length == 0){
-                console.log('success: false, no path')
-                return {success: false, openList, closedList};
-            }
+            
             // 2. get the best tile from open list
             let bestTileFromOpenList = openList.sort((a,b)=>{
                 return getTileScore(a) - getTileScore(b);
@@ -112,8 +106,9 @@ function AStarFinder(){
                         }
                     });
 
-                    if(!someResult){
-                        console.log(closedList)
+                    if(!someResult){     
+                        console.log('closedList', closedList)
+                        console.warn('There is something wrong with A* algorithm');
                         throw new Error('A* error');
                     }
                 }
@@ -132,13 +127,21 @@ function AStarFinder(){
                 else if(!checkIfPointInList(adjTile, openList)){
                     addUniquePointToArray(adjTile, openList);
                 }
-                // 6.3. if title is in the open list: Check if the F score is lower when we use the current generated path to get there. If it is, update its score and update its parent as well.
+                // 6.3. if title is in the open list: 
                 else {
-                    // todo
-                    // (?) optional if we dont need shortest path
+                    // Check if the travelCost is lower when we use the current generated path to get there.
+                    // If it is, update its score and update its parent as well.          
+                    if(adjTile.travelCost > currentPos.travelCost + 1){
+                        adjTile.travelCost = currentPos.travelCost + 1;
+                        console.log('A* mechanics: 6.3');
+                    }
+                    // todo update parent (? optional ?)
                 }
             });
         }
+
+        console.log('A* result: no path');
+        return {success: false, openList, closedList};
     }
 
     this.getFreeAdjacentTiles = getFreeAdjacentTiles;
