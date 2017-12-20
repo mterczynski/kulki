@@ -69,13 +69,10 @@ function AStarFinder(){
             return {success: false, openList:[], closedList:[]};
         }
 
-        from.travelCost = 0;
-
-        const closedList = [];
+        
         let openList = [];    
-        closedList.push(from);
-
-        let currentPos = {x:from.x, y:from.y};
+        let currentPos = {x:from.x, y:from.y, travelCost: 0};
+        const closedList = [currentPos];
         
         // add adjacent tiles to open list:
         const adjacentTiles = getFreeAdjacentTiles(currentPos, array, 0, arraySize, targetPos);
@@ -84,26 +81,19 @@ function AStarFinder(){
         }); 
 
         while(true){
-
+            // 1. if openList is empty -> no more field to check -> no path
             if(openList.length == 0){
-                console.log('null: open list is empty')
+                console.log('success: false, no path')
                 return {success: false, openList, closedList};
             }
-
+            // 2. get the best tile from open list
             let bestTileFromOpenList = openList.sort((a,b)=>{
                 return getTileScore(a) - getTileScore(b);
             })[0];
-
-            if(!bestTileFromOpenList){
-                console.log('null: no best tile')
-                return {success: false, openList, closedList};
-            }
-
+            // 3. change position to the best tile and move it from openList to closedList
             currentPos = bestTileFromOpenList;
-
-            // remove bestTile from open list and it to closed list
             closedList.push(openList.shift());
-
+            // 4. if currentPos == targetPos compute final path:
             if(currentPos.x == targetPos.x && currentPos.y == targetPos.y){
                 // compute and return final path:
                 const finalPath = [currentPos];
@@ -123,34 +113,32 @@ function AStarFinder(){
                     });
 
                     if(!someResult){
+                        console.log(closedList)
                         throw new Error('A* error');
                     }
                 }
 
                 return {success: true, openList, closedList, finalPath};
             }
-
-            // get adjacent tiles
-            const adjacentTiles = getFreeAdjacentTiles(currentPos, array, getEstimate(from, currentPos), arraySize, targetPos);
-         
+            // 5. get adjacent tiles
+            const adjacentTiles = getFreeAdjacentTiles(currentPos, array, currentPos.travelCost, arraySize, targetPos);
+            // 6. forEach adjTile do action depending on in which list is the tile
             adjacentTiles.forEach((adjTile)=>{  
-                // 1. if tile is in the closed list, ignore it
+                // 6.1. if tile is in the closed list, ignore it
                 if(checkIfPointInList(adjTile, closedList)){
                     // do nothing
                 } 
-                // 2. if tile is not in the open list: add it to open list.
+                // 6.2. if tile is not in the open list: add it to open list.
                 else if(!checkIfPointInList(adjTile, openList)){
                     addUniquePointToArray(adjTile, openList);
                 }
-                // 3. if title is in the open list: Check if the F score is lower when we use the current generated path to get there. If it is, update its score and update its parent as well.
+                // 6.3. if title is in the open list: Check if the F score is lower when we use the current generated path to get there. If it is, update its score and update its parent as well.
                 else {
                     // todo
                     // (?) optional if we dont need shortest path
                 }
             });
         }
-
-        return {success: false, openList, closedList};
     }
 
     this.getFreeAdjacentTiles = getFreeAdjacentTiles;
