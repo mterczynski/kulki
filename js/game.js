@@ -27,9 +27,9 @@ restartGameButton.addEventListener('click', ()=>{
 
 function addNewBall(x, y){
     const ballElement = document.createElement('div');
-    const ballColor = `hsl(${ballColors[Math.floor(Math.random() * ballColors.length)]}, 80%, 50%)`;
+    const ballColor = randomInt(1, numberOfColors);
     ballElement.classList.add('ball');
-    ballElement.style.background = ballColor;
+    ballElement.classList.add('color' + ballColor);
     const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
     if(tile.childNodes.length > 0){
         return false;   // if tile is busy stop function, return false
@@ -83,22 +83,6 @@ function drawPath(from, to){
     hoveredTile = {x:to.x, y:to.y, isPath: path.success}; 
 }
 
-function generateColors(){
-    const firstColorHue = randomFloat(0, 360);
-    ballColors = [firstColorHue];
-    for(let i=1; i<numberOfColors; i++){
-        const nextColor = (firstColorHue + 360/numberOfColors * i) % 360;
-        ballColors.push(nextColor);
-    }
-    // random colors for next turn, todo change to 4
-    nextBallColors = [];
-    for(let i=0; i<3; i++){
-        const nextBallColor = ballColors[Math.floor(Math.random() * ballColors.length)];
-        nextBallColors.push(nextBallColor);
-        nextBallColorHTMLElements[i].style.backgroundColor = `hsl(${nextBallColor}, 80%, 50%)`;
-    }
-}
-
 function onTileClick(event){
     if(isGameOver){
         return;
@@ -109,25 +93,23 @@ function onTileClick(event){
     let clickedPos = getTilePosition(tile);
 
     if(board[clickedPos.x][clickedPos.y]){  // if there is ball on clicked tile: change selection
-        // remove selection from all tiles:
-        document.querySelectorAll('.board__row__tile').forEach((el)=>{
+        // remove selection from all balls:
+        document.querySelectorAll('.ball').forEach((el)=>{
             el.classList.remove('selected');
         });
         // change selected tile, add css class
         selectedTile = {x: clickedPos.x, y: clickedPos.y, htmlElement: tile};
-        selectedTile.htmlElement.classList.add('selected');
+        selectedTile.htmlElement.children[0].classList.add('selected');
     } else { // if there is no ball on clicked tile
         if(selectedTile && hoveredTile.isPath){ // move, check if 5 in line
             const clickedTileNode = tileNodes[clickedPos.x][clickedPos.y];
             const selectedTileNode = tileNodes[selectedTile.x][selectedTile.y];
+            const selectedBallColor = board[selectedTile.x][selectedTile.y];
 
-            let styleColor = selectedTileNode.childNodes[0].style.backgroundColor.split(',');
-            let red = styleColor[0].split('(')[1];
-            let green = styleColor[1];
-            let blue = styleColor[2].split(')')[0];
-            
-            let hsl = rgbToHsl(red, green, blue);
-            console.log(hsl)
+            clickedTileNode.appendChild(selectedTileNode.children[0]);
+            clickedTileNode.children[0].classList.remove('selected');
+            selectedTile = null;
+            board[clickedPos.x][clickedPos.y] = selectedBallColor;
             // todo: check if at least 5 in line
             
             // todo: check for loss
@@ -143,13 +125,29 @@ function onTileHover(event){
     }
 }
 
+function randomNext3Colors(){
+    nextBallColors = [
+        randomInt(1, numberOfColors), 
+        randomInt(1, numberOfColors),
+        randomInt(1, numberOfColors)
+    ];
+
+    nextBallColorHTMLElements[0].className = '';
+    nextBallColorHTMLElements[1].className = '';
+    nextBallColorHTMLElements[2].className = '';
+
+    nextBallColorHTMLElements[0].classList.add('color' + nextBallColors[0], 'nextBallColor');
+    nextBallColorHTMLElements[1].classList.add('color' + nextBallColors[1], 'nextBallColor');
+    nextBallColorHTMLElements[2].classList.add('color' + nextBallColors[2], 'nextBallColor');
+}
+
 function restartGame(){
     isGameOver = false;
     boardSize = boardSizeInput.valueAsNumber;
     numberOfColors = numberOfColorsInput.valueAsNumber;
     currentScore = 0;
     currentScoreOutput.innerHTML = 0;
-    generateColors();
+    randomNext3Colors();
     drawBoard();
     // add 3 balls to the board:
     for(let i=0; i<3; i++){
