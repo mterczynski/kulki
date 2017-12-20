@@ -1,12 +1,15 @@
+const aStarFinder = new AStarFinder();
+
+// html elements:
 const boardHTMLElement = document.querySelector('#board');
 const boardSizeInput = document.querySelector('#boardSizeInput');
 const restartGameButton = document.querySelector('#restartGameButton');
 const numberOfColorsInput = document.querySelector('#numberOfColorsInput');
 const currentScoreOutput = document.querySelector('#currentScoreOutput');
 const nextBallColorHTMLElements = document.querySelectorAll('.nextBallColor');
+let tileNodes; // two dimensional array of tiles
 
-const aStarFinder = new AStarFinder();
-
+// game variables:
 let boardSize;
 let currentScore = 0;
 let ballColors = [];
@@ -16,6 +19,7 @@ let nextBallColors = [];
 let selectedTile; // tile with selected ball (first click to select, second click to move)
 // let numberOfBusyTiles = 0;
 let numberOfColors;
+let hoveredTile = {x:0, y:0, isPath: false} // only for moving active ball
 
 restartGameButton.addEventListener('click', ()=>{
     restartGame();
@@ -34,6 +38,14 @@ function addNewBall(x, y){
     // numberOfBusyTiles++;
     board[x][y] = ballColor;
     return true;
+}
+
+function checkFor5(movedPos, board){
+
+}
+
+function checkForLoss(board){
+
 }
 
 function drawBoard(){
@@ -59,45 +71,16 @@ function drawBoard(){
         }
         boardHTMLElement.appendChild(row);
     }
+
+    tileNodes = boardToTileNodeArray(boardHTMLElement, boardSize);
 }
 
 function drawPath(from, to){
     const boardRows = boardHTMLElement.childNodes;
-    // console.log('from', from);
-    // console.log('to', to);
-    let path = aStarFinder.findPath(board, from, to, {x: boardSize, y:boardSize});
+    let path = aStarFinder.findPath(board, from, to, {x:boardSize, y:boardSize});
+    // paintPath(path);
 
-
-    // paint:
-
-    const tiles = [];
-    Array.from(boardHTMLElement.children).forEach((row)=>{
-        const rowArray = [];
-        Array.from(row.children).forEach((tile)=>{
-            rowArray.push(tile);
-            tile.classList.remove('openList');
-            tile.classList.remove('closedList');
-            tile.classList.remove('finalPath');
-        });
-        tiles.push(rowArray);
-    });
-    // paint open list:
-    path.openList.forEach((tile)=>{
-        tiles[tile.y][tile.x].classList.add('openList');
-    })
-
-    // paint closed list:
-    path.closedList.forEach((tile)=>{
-        tiles[tile.y][tile.x].classList.add('closedList');
-    });
-
-    // paint finalPath:
-    path.finalPath.forEach((tile)=>{
-        tiles[tile.y][tile.x].classList.add('finalPath');
-    });
-
-    // console.log('closedList size: ' + path.closedList.length)
-    console.log(path.finalPath)
+    hoveredTile = {x:to.x, y:to.y, isPath: path.success}; 
 }
 
 function generateColors(){
@@ -134,9 +117,19 @@ function onTileClick(event){
         selectedTile = {x: clickedPos.x, y: clickedPos.y, htmlElement: tile};
         selectedTile.htmlElement.classList.add('selected');
     } else { // if there is no ball on clicked tile
-        if(selectedTile){ // move, check if 5 in line
-            // todo: move
+        if(selectedTile && hoveredTile.isPath){ // move, check if 5 in line
+            const clickedTileNode = tileNodes[clickedPos.x][clickedPos.y];
+            const selectedTileNode = tileNodes[selectedTile.x][selectedTile.y];
+
+            let styleColor = selectedTileNode.childNodes[0].style.backgroundColor.split(',');
+            let red = styleColor[0].split('(')[1];
+            let green = styleColor[1];
+            let blue = styleColor[2].split(')')[0];
+            
+            let hsl = rgbToHsl(red, green, blue);
+            console.log(hsl)
             // todo: check if at least 5 in line
+            
             // todo: check for loss
         } 
     }

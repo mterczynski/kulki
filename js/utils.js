@@ -1,3 +1,18 @@
+function boardToTileNodeArray(htmlBoard, boardSize){
+    const tileNodes = [];
+    const boardTiles = htmlBoard.querySelectorAll(':scope >*>*');
+
+    for(let i=0; i<boardSize; i++){
+        tileNodes.push([]);
+    }
+
+    for(let i=0; i<boardSize*boardSize; i++){
+        tileNodes[i % boardSize].push(boardTiles[i]);
+    }
+
+    return tileNodes;
+}
+
 function getRandomBallColor(){
     return `hsl(${randomFloat(0,360)}, 80%, 50%)`;
 }
@@ -36,4 +51,53 @@ function randomFloat(min, max) {
 
 function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function rgbToHsl(r, g, b){
+    r /= 255, g /= 255, b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if(max == min){
+        h = s = 0; // achromatic
+    }else{
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return [h * 100, s * 100, l * 100];
+}
+
+function paintPath(path){
+    const tiles = [];
+    Array.from(boardHTMLElement.children).forEach((row)=>{
+        const rowArray = [];
+        Array.from(row.children).forEach((tile)=>{
+            rowArray.push(tile);
+            tile.classList.remove('openList');
+            tile.classList.remove('closedList');
+            tile.classList.remove('finalPath');
+        });
+        tiles.push(rowArray);
+    });
+
+    path.openList.forEach((tile)=>{
+        tiles[tile.y][tile.x].classList.add('openList');
+    })
+
+    path.closedList.forEach((tile)=>{
+        tiles[tile.y][tile.x].classList.add('closedList');
+    });
+
+    if(path.finalPath){
+        path.finalPath.forEach((tile)=>{
+            tiles[tile.y][tile.x].classList.add('finalPath');
+        });
+    }
 }

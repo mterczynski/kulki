@@ -140,9 +140,6 @@ function AStarFinder(){
             });
         }
 
-        console.log('A* result: no path');
         return {success: false, openList, closedList};
     }
-
-    this.getFreeAdjacentTiles = getFreeAdjacentTiles;
 }
