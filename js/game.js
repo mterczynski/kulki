@@ -40,12 +40,27 @@ function addNewBall(x, y){
     return true;
 }
 
-function checkFor5(movedPos, board){
-
+function checkFor5(movedPos, board, movedColor){
+    // first 2 loops: 8 directions from center
+    for(let dirX=-1; dirX<=1; dirX++){
+        for(let dirY=-1; dirY<=1; dirY++){
+            
+        }
+    }
 }
 
 function checkForLoss(board){
 
+}
+
+function clearPaths(){
+    tileNodes.forEach((row)=>{
+        row.forEach((tile)=>{
+            tile.classList.remove('openList');
+            tile.classList.remove('closedList');
+            tile.classList.remove('finalPath');
+        });
+    });
 }
 
 function drawBoard(){
@@ -71,14 +86,13 @@ function drawBoard(){
         }
         boardHTMLElement.appendChild(row);
     }
-
     tileNodes = boardToTileNodeArray(boardHTMLElement, boardSize);
 }
 
 function drawPath(from, to){
     const boardRows = boardHTMLElement.childNodes;
     let path = aStarFinder.findPath(board, from, to, {x:boardSize, y:boardSize});
-    // paintPath(path);
+    paintPath(path);
 
     hoveredTile = {x:to.x, y:to.y, isPath: path.success}; 
 }
@@ -102,14 +116,17 @@ function onTileClick(event){
         selectedTile.htmlElement.children[0].classList.add('selected');
     } else { // if there is no ball on clicked tile
         if(selectedTile && hoveredTile.isPath){ // move, check if 5 in line
+            console.log(selectedTile)
             const clickedTileNode = tileNodes[clickedPos.x][clickedPos.y];
             const selectedTileNode = tileNodes[selectedTile.x][selectedTile.y];
             const selectedBallColor = board[selectedTile.x][selectedTile.y];
 
             clickedTileNode.appendChild(selectedTileNode.children[0]);
             clickedTileNode.children[0].classList.remove('selected');
-            selectedTile = null;
             board[clickedPos.x][clickedPos.y] = selectedBallColor;
+            board[selectedTile.x][selectedTile.y] = null;
+            selectedTile = null;
+            clearPaths();
             // todo: check if at least 5 in line
             
             // todo: check for loss

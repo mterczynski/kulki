@@ -75,29 +75,19 @@ function rgbToHsl(r, g, b){
 }
 
 function paintPath(path){
-    const tiles = [];
-    Array.from(boardHTMLElement.children).forEach((row)=>{
-        const rowArray = [];
-        Array.from(row.children).forEach((tile)=>{
-            rowArray.push(tile);
-            tile.classList.remove('openList');
-            tile.classList.remove('closedList');
-            tile.classList.remove('finalPath');
-        });
-        tiles.push(rowArray);
-    });
+    clearPaths();
 
     path.openList.forEach((tile)=>{
-        tiles[tile.y][tile.x].classList.add('openList');
-    })
+        tileNodes[tile.x][tile.y].classList.add('openList');
+    });
 
     path.closedList.forEach((tile)=>{
-        tiles[tile.y][tile.x].classList.add('closedList');
+        tileNodes[tile.x][tile.y].classList.add('closedList');
     });
 
     if(path.finalPath){
         path.finalPath.forEach((tile)=>{
-            tiles[tile.y][tile.x].classList.add('finalPath');
+            tileNodes[tile.x][tile.y].classList.add('finalPath');
         });
     }
 }
