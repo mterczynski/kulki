@@ -27,31 +27,33 @@ restartGameButton.addEventListener('click', ()=>{
 
 function addNext3Balls(){
 
-    // todo: for every nextBall: check for 5 in a row after adding it
+    const newlyAdded = [];
 
     for(let i=0; i<3; i++){
         if(isBoardFull()){
             return false; // loss
         }
 
-
         while(true){ // try to find next free tile in board
-            let posX = randomInt(0, 8);
-            let posY = randomInt(0, 8);
+            const posX = randomInt(0, 8);
+            const posY = randomInt(0, 8);
 
             if(board[posX][posY] == null){
-                let ballNode = document.createElement('div');
+                const color = nextBallColors[i];
+                const ballNode = document.createElement('div');
                 ballNode.classList.add('ball', 'color' + nextBallColors[i]);
-                console.log('tileNodes', tileNodes);
-                console.log('x', posX);
-                console.log('y', posY);
-                console.log(tileNodes[posX][posY]);
                 tileNodes[posX][posY].appendChild(ballNode);
-                board[posX][posY] = nextBallColors[i];
+                board[posX][posY] = color;
+                newlyAdded.push({posX, posY, color});
                 break;
             }
         }
     }
+
+    // for every nextBall: check for 5 in a row after adding it
+    newlyAdded.forEach((ball)=>{
+        checkFor5({x: ball.posX, y: ball.posY}, board, ball.color, boardSize);
+    });
 
     if(isBoardFull()){
         return false; // loss
@@ -75,8 +77,8 @@ function addNewBall(x, y){
     return true;
 }
 
-function checkFor5(movedPos, board, movedColor, boardSize){
-
+function checkFor5(movedPos, board, movedColor, boardSize){ // todo: fix, not always working 
+    // todo: fix vertical, horizontal
     function checkInDirection(dirX, dirY){
 
         let line = [movedPos];
@@ -88,9 +90,10 @@ function checkFor5(movedPos, board, movedColor, boardSize){
             let y = i*dirY + movedPos.y; // posY
             // 1. if position is not inside the board:
             if((x >= 0 && y >= 0 && x < boardSize && y < boardSize) == false){
-                if(iDir == -1){
-                    i = 0;
+                if(iDir == 1){
+                    i = 0; // will be -1 after iteration
                     iDir = -1;
+                    continue;
                 } else {
                     if(line.length >= 5){
                         return line;
@@ -104,10 +107,9 @@ function checkFor5(movedPos, board, movedColor, boardSize){
             if(board[x][y] == movedColor){
                 line.push({x, y});  
             } else  { // no more balls of the same color in this direction, change direction
-                if(iDir == -1){
-                    i = 0;
+                if(iDir == 1){
+                    i = 0; // will be -1 after iteration
                     iDir = -1;
-                    continue;
                 } else {
                     if(line.length >= 5){
                         return line;
@@ -125,11 +127,23 @@ function checkFor5(movedPos, board, movedColor, boardSize){
     let horizontal = checkInDirection(1, 0);
 
     let ballsToRemove = diagonal1.concat(vertical).concat(diagonal2).concat(horizontal);
-
-    console.log('ballsToRemove',ballsToRemove);
-
+    
     if(ballsToRemove.length > 0){
-        // todo remove balls
+        console.log('ballsToRemove', ballsToRemove);
+        let removedCount = 0;
+        ballsToRemove.forEach((ball)=>{
+            if(board[ball.x][ball.y] == null){
+                return; // skip, it's a duplicate
+            }
+            board[ball.x][ball.y] = null;
+            tileNodes[ball.x][ball.y].innerHTML = '';
+            removedCount++;
+        });
+        // todo: increase score
+        setGameScore(currentScore + removedCount * removedCount);
+
+        console.log('removedCount',removedCount);
+        console.log('ballsToRemove',ballsToRemove);
         return true; // next turn
     } else {
         return false; // no next turn
@@ -179,9 +193,13 @@ function drawBoard(){
 function drawPath(from, to){
     const boardRows = boardHTMLElement.childNodes;
     let path = aStarFinder.findPath(board, from, to, {x:boardSize, y:boardSize});
-    paintPath(path);
+    // paintPath(path);
 
     hoveredTile = {x:to.x, y:to.y, isPath: path.success}; 
+}
+
+function gameOver(){
+    alert('Game over. Your score: ' + currentScore);
 }
 
 function isBoardFull(){
@@ -211,7 +229,6 @@ function onTileClick(event){
         selectedTile.htmlElement.children[0].classList.add('selected');
     } else { // if there is no ball on clicked tile
         if(selectedTile && hoveredTile.isPath){ // move, check if 5 in line
-            console.log(selectedTile)
             const clickedTileNode = tileNodes[clickedPos.x][clickedPos.y];
             const selectedTileNode = tileNodes[selectedTile.x][selectedTile.y];
             const selectedBallColor = board[selectedTile.x][selectedTile.y];
@@ -223,14 +240,14 @@ function onTileClick(event){
             selectedTile = null;
             clearPaths();
             if(checkFor5(clickedPos, board, selectedBallColor, boardSize)){
-                // todo: next turn
-                console.log('next turn')
+                // skip, next turn
             } else {
+                // addNext3Balls, check for loss
                 if(addNext3Balls() == false){
-                    // todo: loss
-                    console.log('game over')
+                    gameOver();
                 }     
             }
+            randomNext3Colors();
         } 
     }
 }
@@ -277,4 +294,9 @@ function restartGame(){
             }
         }
     }
+}
+
+function setGameScore(score){
+    currentScore = score;
+    currentScoreOutput.innerHTML = score;
 }

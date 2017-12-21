@@ -135,7 +135,6 @@ function AStarFinder(){
                         adjTile.travelCost = currentPos.travelCost + 1;
                         console.log('A* mechanics: 6.3');
                     }
-                    // todo update parent (? optional ?)
                 }
             });
         }
