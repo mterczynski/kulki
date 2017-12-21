@@ -40,12 +40,62 @@ function addNewBall(x, y){
     return true;
 }
 
-function checkFor5(movedPos, board, movedColor){
-    // first 2 loops: 8 directions from center
-    for(let dirX=-1; dirX<=1; dirX++){
-        for(let dirY=-1; dirY<=1; dirY++){
-            
+function checkFor5(movedPos, board, movedColor, boardSize){
+
+    function checkInDirection(dirX, dirY){
+
+        let line = [movedPos];
+        let iDir = 1; // go in specified by dirX and dirY or direction (1) or go backwards (-1)
+        let i = 1;
+
+        for(; true; i+=iDir){ // keep checking for the same color in that direction
+            let x = i*dirX + movedPos.x; // posX
+            let y = i*dirY + movedPos.y; // posY
+            // 1. if position is not inside the board:
+            if(x >= 0 && y >= 0 && x < boardSize && y < boardSize == false){
+                if(iDir == -1){
+                    i = 0;
+                    iDir = -1;
+                } else {
+                    if(line.length >= 5){
+                        return line;
+                    } else {
+                        return [];
+                    }    
+                }
+            }
+            // 2. if next color is the same, add it to line
+            if(board[x][y] == movedColor){
+                line.push({x, y});  
+            } else  { // no more balls of the same color in this direction, change direction
+                if(iDir == -1){
+                    i = 0;
+                    iDir = -1;
+                    continue;
+                } else {
+                    if(line.length >= 5){
+                        return line;
+                    } else {
+                        return [];
+                    }    
+                }
+            }
         }
+    }
+
+    let diagonal1 = checkInDirection(-1, 1);
+    let vertical = checkInDirection(0, 1);
+    let diagonal2 = checkInDirection(1, 1);
+    let horizontal = checkInDirection(1, 0);
+
+    let ballsToRemove = diagonal1.concat(vertical).concat(diagonal2).concat(horizontal);
+
+    console.log(ballsToRemove);
+
+    if(ballsToRemove.length > 0){
+        return true; // next turn
+    } else {
+        return false; // no next turn
     }
 }
 
@@ -128,6 +178,7 @@ function onTileClick(event){
             selectedTile = null;
             clearPaths();
             // todo: check if at least 5 in line
+            checkFor5(clickedPos, board, selectedBallColor, boardSize);
             
             // todo: check for loss
         } 
