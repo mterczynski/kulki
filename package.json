@@ -1,0 +1,21 @@
+{
+  "name": "kulki",
+  "version": "1.0.0",
+  "description": "My version of a game called Kulki/Color lines. I've used my own implementation of A* pathfinding algorithm.",
+  "main": "index.js",
+  "scripts": {
+    "start": "start ./index.html",
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mterczynski/kulki.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mterczynski/kulki/issues"
+  },
+  "homepage": "https://github.com/mterczynski/kulki#readme"
+}
