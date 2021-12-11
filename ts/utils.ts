@@ -1,3 +1,11 @@
+import { CssClasses } from "types";
+
+enum PathClass {
+	openList = 'openList',
+	closedList = 'closedList',
+	finalPath = 'finalPath',
+}
+
 export function boardToTileNodeArray(htmlBoard: Element, boardSize: number): Element[][] {
 	const tileNodes: Element[][] = [];
 	const boardTiles = htmlBoard.querySelectorAll(':scope >*>*');
@@ -16,8 +24,8 @@ export function boardToTileNodeArray(htmlBoard: Element, boardSize: number): Ele
 export function getTilePosition(tile: any, boardHTMLElement: Element, boardSize: number) {
 	const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
 
-	let x;
-	let y;
+	let x: number | undefined;
+	let y: number | undefined;
 
 	for (let i = 0; i < boardSize; i++) {
 		if (tile.parentNode === boardRows[i]) {
@@ -30,22 +38,23 @@ export function getTilePosition(tile: any, boardHTMLElement: Element, boardSize:
 			}
 		}
 	}
+
 	return { x, y };
 }
 
 export function clearPaths(tileNodes: Element[][]): void {
 	tileNodes.forEach(row => {
 		row.forEach(tile => {
-			tile.classList.remove('openList');
-			tile.classList.remove('closedList');
-			tile.classList.remove('finalPath');
+			tile.classList.remove(PathClass.openList);
+			tile.classList.remove(PathClass.closedList);
+			tile.classList.remove(PathClass.finalPath);
 		});
 	});
 }
 
 export function getTileFromEventTarget(eventTarget: HTMLElement): HTMLElement | ParentNode | null {
 	let tile = eventTarget;
-	if (tile.classList.contains('ball')) {
+	if (tile.classList.contains(CssClasses.ball)) {
 		return tile.parentNode;
 	}
 	return tile;
@@ -63,16 +72,16 @@ export function paintPath(path: { openList: any[], closedList: any[], finalPath:
 	clearPaths(tileNodes);
 
 	path.openList.forEach((tile) => {
-		tileNodes[tile.x][tile.y].classList.add('openList');
+		tileNodes[tile.x][tile.y].classList.add(PathClass.openList);
 	});
 
 	path.closedList.forEach((tile) => {
-		tileNodes[tile.x][tile.y].classList.add('closedList');
+		tileNodes[tile.x][tile.y].classList.add(PathClass.closedList);
 	});
 
 	if (path.finalPath) {
 		path.finalPath.forEach((tile) => {
-			tileNodes[tile.x][tile.y].classList.add('finalPath');
+			tileNodes[tile.x][tile.y].classList.add(PathClass.finalPath);
 		});
 	}
 }

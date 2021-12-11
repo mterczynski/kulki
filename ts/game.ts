@@ -1,4 +1,4 @@
-import { Position } from "types";
+import { CssClasses, Position } from "types";
 import { AStarFinder } from "./aStarFinder";
 import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, paintPath, randomInt } from "./utils";
 
@@ -67,7 +67,7 @@ function addNext3Balls(): boolean {
 			if (board[posX][posY] == null) {
 				const color = nextBallColors[i];
 				const ballNode = document.createElement('div');
-				ballNode.classList.add('ball', 'color' + nextBallColors[i]);
+				ballNode.classList.add(CssClasses.ball, 'color' + nextBallColors[i]);
 				tileNodes[posX][posY].appendChild(ballNode);
 				board[posX][posY] = color;
 				newlyAdded.push({ posX, posY, color });
@@ -91,7 +91,7 @@ function addNext3Balls(): boolean {
 function addNewBall(x: number, y: number): boolean {
 	const ballElement = document.createElement('div');
 	const ballColor = randomInt(1, numberOfColors);
-	ballElement.classList.add('ball');
+	ballElement.classList.add(CssClasses.ball);
 	ballElement.classList.add('color' + ballColor);
 	const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
 	if (tile.childNodes.length > 0) {
@@ -257,7 +257,7 @@ function onTileClick(event: MouseEvent): void {
 
 function onTileHover(event: MouseEvent): void {
 	// if there is selected tile and target has no child(tile with no ball) and target is not ball:
-	if (selectedTile && (event.target as any).childNodes.length == 0 && !(event.target as any).classList.contains('ball')) {
+	if (selectedTile && (event.target as any).childNodes.length == 0 && !(event.target as any).classList.contains(CssClasses.ball)) {
 		const tile = getTileFromEventTarget(event.target as any);
 		drawPath(selectedTile, getTilePosition(tile, boardHTMLElement, boardSize) as Position);
 	}

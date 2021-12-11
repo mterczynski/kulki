@@ -7,3 +7,7 @@ export interface BoardSize {
 	x: number;
 	y: number;
 }
+
+export enum CssClasses {
+	ball = 'ball',
+}
