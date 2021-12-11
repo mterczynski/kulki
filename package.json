@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve",
     "start:open": "webpack serve --open",
-    "test": "npm test",
+    "test": "echo \"no tests declared yet\"",
     "build": "webpack --mode=production"
   },
   "repository": {

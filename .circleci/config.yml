@@ -3,25 +3,19 @@ version: 2.1
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  main:
+	ci:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: circleci/node:latest
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-      - run:
-        name: "Install"
-        command: "npm install"
-      - run:
-        name: "Build"
-        command: "npm run build"
-      - run:
-        name: "Test"
-        command: "npm test"
+      - run: npm install
+      - run: npm run build
+      - run: npm test
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  test:
+  ci:
     jobs:
-      - main
+			- ci
