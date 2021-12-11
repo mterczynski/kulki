@@ -1,4 +1,4 @@
-function boardToTileNodeArray(htmlBoard, boardSize) {
+export function boardToTileNodeArray(htmlBoard, boardSize) {
     const tileNodes = [];
     const boardTiles = htmlBoard.querySelectorAll(':scope >*>*');
 
@@ -13,7 +13,7 @@ function boardToTileNodeArray(htmlBoard, boardSize) {
     return tileNodes;
 }
 
-function getTilePosition(tile) {
+export function getTilePosition(tile, boardHTMLElement, boardSize) {
     const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
 
     let x;
@@ -33,7 +33,17 @@ function getTilePosition(tile) {
     return { x, y };
 }
 
-function getTileFromEventTarget(eventTarget) {
+export function clearPaths(tileNodes) {
+    tileNodes.forEach(row => {
+        row.forEach(tile => {
+            tile.classList.remove('openList');
+            tile.classList.remove('closedList');
+            tile.classList.remove('finalPath');
+        });
+    });
+}
+
+export function getTileFromEventTarget(eventTarget) {
     let tile = eventTarget;
     if (tile.classList.contains('ball')) {
         tile = tile.parentNode;
@@ -41,16 +51,16 @@ function getTileFromEventTarget(eventTarget) {
     return tile;
 }
 
-function randomFloat(min, max) {
+export function randomFloat(min, max) {
     return Math.random() * (max - min + 1) + min;
 }
 
-function randomInt(min, max) {
+export function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function paintPath(path) {
-    clearPaths();
+export function paintPath(path, tileNodes) {
+    clearPaths(tileNodes);
 
     path.openList.forEach((tile) => {
         tileNodes[tile.x][tile.y].classList.add('openList');

@@ -1,14 +1,14 @@
-function AStarFinder() {
+export class AStarFinder {
     // Manhattan heuristic:
-    function getEstimate(from, to) {
+    private getEstimate(from, to) {
         return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
     }
 
-    function getTileScore(tile) {
+    private getTileScore(tile) {
         return tile.estimate + tile.travelCost;
     }
     // return array of tiles sorted by their score
-    function getFreeAdjacentTiles(currentPos, board, currentTravelCost, boardSize, targetPos) {
+    private getFreeAdjacentTiles(currentPos, board, currentTravelCost, boardSize, targetPos) {
         const adjacentTiles = [];
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
@@ -21,7 +21,7 @@ function AStarFinder() {
                             adjacentTiles.push({
                                 x: tilePos.x,
                                 y: tilePos.y,
-                                estimate: getEstimate(tilePos, targetPos),
+                                estimate: this.getEstimate(tilePos, targetPos),
                                 travelCost: currentTravelCost + 1
                             });
                         }
@@ -30,19 +30,19 @@ function AStarFinder() {
             }
         }
         adjacentTiles.sort((a, b) => {
-            return getTileScore(a) > getTileScore(b);
+            return this.getTileScore(a) > this.getTileScore(b) ? 1 : 0;
         });
         return adjacentTiles;
     }
 
-    function getAdjacentFromClosedList(closedList, currentPos) {
+    private getAdjacentFromClosedList(closedList, currentPos) {
         return closedList.filter((tile) => {
             return Math.abs(tile.x - currentPos.x) == 1 && Math.abs(tile.y - currentPos.y) == 0 ||
                 Math.abs(tile.x - currentPos.x) == 0 && Math.abs(tile.y - currentPos.y) == 1;
         });
     }
 
-    function addUniquePointToArray(point, array) {
+    private addUniquePointToArray(point, array) {
         if (array.filter((el) => {
             return el.x == point.x && el.y == point.y;
         }).length == 0) {
@@ -52,7 +52,7 @@ function AStarFinder() {
         return false;
     }
 
-    function checkIfPointInList(point, list) {
+    private checkIfPointInList(point, list) {
         if (list.filter((el) => {
             return el.x == point.x && point.y == el.y;
         }).length > 0) {
@@ -62,7 +62,7 @@ function AStarFinder() {
         }
     }
 
-    this.findPath = (array, from, targetPos, arraySize) => {
+    findPath(array, from, targetPos, arraySize) {
         if (from.x == targetPos.x && from.y == targetPos.y) {
             return { success: false, openList: [], closedList: [] };
         }
@@ -72,17 +72,17 @@ function AStarFinder() {
         const closedList = [currentPos];
 
         // add adjacent tiles to open list:
-        const adjacentTiles = getFreeAdjacentTiles(currentPos, array, 0, arraySize, targetPos);
+        const adjacentTiles = this.getFreeAdjacentTiles(currentPos, array, 0, arraySize, targetPos);
         adjacentTiles.forEach((el) => {
             openList.push(el);
         });
 
-        while (!openList.length == 0) {
+        while (openList.length !== 0) {
             // 1. if openList is empty -> no more field to check -> no path
 
             // 2. get the best tile from open list
             let bestTileFromOpenList = openList.sort((a, b) => {
-                return getTileScore(a) - getTileScore(b);
+                return this.getTileScore(a) - this.getTileScore(b);
             })[0];
             // 3. change position to the best tile and move it from openList to closedList
             currentPos = bestTileFromOpenList;
@@ -93,7 +93,7 @@ function AStarFinder() {
                 const finalPath = [currentPos];
 
                 while (!(currentPos.x == from.x && currentPos.y == from.y)) {
-                    const adjacentTiles = getAdjacentFromClosedList(closedList, currentPos);
+                    const adjacentTiles = this.getAdjacentFromClosedList(closedList, currentPos);
 
                     adjacentTiles.some((tile) => {
                         if (currentPos.travelCost - 1 == tile.travelCost) {
@@ -107,21 +107,21 @@ function AStarFinder() {
                 return { success: true, openList, closedList, finalPath };
             }
             // 5. get adjacent tiles
-            const adjacentTiles = getFreeAdjacentTiles(currentPos, array, currentPos.travelCost, arraySize, targetPos);
+            const adjacentTiles = this.getFreeAdjacentTiles(currentPos, array, currentPos.travelCost, arraySize, targetPos);
             // 6. forEach adjTile do action depending on in which list is the tile
             adjacentTiles.forEach((adjTile) => {
                 // 6.1. if tile is in the closed list, ignore it
-                if (checkIfPointInList(adjTile, closedList)) {
+                if (this.checkIfPointInList(adjTile, closedList)) {
                     // do nothing
                 }
                 // 6.2. if tile is not in the open list: add it to open list.
-                else if (!checkIfPointInList(adjTile, openList)) {
-                    addUniquePointToArray(adjTile, openList);
+                else if (!this.checkIfPointInList(adjTile, openList)) {
+                    this.addUniquePointToArray(adjTile, openList);
                 }
-                // 6.3. if title is in the open list: 
+                // 6.3. if title is in the open list:
                 else {
                     // Check if the travelCost is lower when we use the current generated path to get there.
-                    // If it is, update its score and update its parent as well.          
+                    // If it is, update its score and update its parent as well.
                     if (adjTile.travelCost > currentPos.travelCost + 1) {
                         adjTile.travelCost = currentPos.travelCost + 1;
                     }

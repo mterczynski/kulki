@@ -1,18 +1,20 @@
+import { AStarFinder } from "./aStarFinder";
+import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, randomInt } from "./utils";
+
 const aStarFinder = new AStarFinder();
 
 // html elements:
-const boardHTMLElement = document.querySelector('#board');
-const boardSizeInput = document.querySelector('#boardSizeInput');
-const restartGameButton = document.querySelector('#restartGameButton');
-const numberOfColorsInput = document.querySelector('#numberOfColorsInput');
-const currentScoreOutput = document.querySelector('#currentScoreOutput');
-const nextBallColorHTMLElements = document.querySelectorAll('.nextBallColor');
+const boardHTMLElement: Element = document.querySelector('#board') as Element;
+const boardSizeInput: HTMLInputElement = document.querySelector('#boardSizeInput') as HTMLInputElement;
+const restartGameButton: Element = document.querySelector('#restartGameButton') as Element;
+const numberOfColorsInput: HTMLInputElement = document.querySelector('#numberOfColorsInput') as HTMLInputElement;
+const currentScoreOutput: Element = document.querySelector('#currentScoreOutput') as Element;
+const nextBallColorHTMLElements: NodeListOf<Element> = document.querySelectorAll('.nextBallColor');
 let tileNodes; // two dimensional array of tiles
 
 // game variables:
 let boardSize;
 let currentScore = 0;
-let ballColors = [];
 let isGameOver = false;
 let board = []; // two-dimensional array of colors
 let nextBallColors = [];
@@ -77,7 +79,7 @@ function addNewBall(x, y) {
     return true;
 }
 
-function checkFor5(movedPos, board, movedColor, boardSize) { // todo: fix, not always working 
+function checkFor5(movedPos, board, movedColor, boardSize) { // todo: fix, not always working
     // todo: fix vertical, horizontal
     function checkInDirection(dirX, dirY) {
 
@@ -145,16 +147,6 @@ function checkFor5(movedPos, board, movedColor, boardSize) { // todo: fix, not a
     }
 }
 
-function clearPaths() {
-    tileNodes.forEach(row => {
-        row.forEach(tile => {
-            tile.classList.remove('openList');
-            tile.classList.remove('closedList');
-            tile.classList.remove('finalPath');
-        });
-    });
-}
-
 function drawBoard() {
     // Clear board:
     while (boardHTMLElement.firstChild) {
@@ -208,7 +200,7 @@ function onTileClick(event) {
 
     const tile = getTileFromEventTarget(event.target);
 
-    let clickedPos = getTilePosition(tile);
+    let clickedPos = getTilePosition(tile, boardHTMLElement, boardSize);
 
     if (board[clickedPos.x][clickedPos.y]) {  // if there is ball on clicked tile: change selection
         // remove selection from all balls:
@@ -230,7 +222,7 @@ function onTileClick(event) {
             board[selectedTile.x][selectedTile.y] = null;
             selectedTile = null;
 
-            clearPaths();
+            clearPaths(tileNodes);
             if (!checkFor5(clickedPos, board, selectedBallColor, boardSize) && !addNext3Balls()) {
                 gameOver();
             }
@@ -243,7 +235,7 @@ function onTileHover(event) {
     // if there is selected tile and target has no child(tile with no ball) and target is not ball:
     if (selectedTile && event.target.childNodes.length == 0 && !event.target.classList.contains('ball')) {
         const tile = getTileFromEventTarget(event.target);
-        drawPath(selectedTile, getTilePosition(tile));
+        drawPath(selectedTile, getTilePosition(tile, boardHTMLElement, boardSize));
     }
 }
 
@@ -263,12 +255,12 @@ function randomNext3Colors() {
     nextBallColorHTMLElements[2].classList.add('color' + nextBallColors[2], 'nextBallColor');
 }
 
-function restartGame() {
+export function restartGame() {
     isGameOver = false;
     boardSize = boardSizeInput.valueAsNumber;
     numberOfColors = numberOfColorsInput.valueAsNumber;
     currentScore = 0;
-    currentScoreOutput.innerHTML = 0;
+    currentScoreOutput.innerHTML = '0';
     randomNext3Colors();
     drawBoard();
     // add 3 balls to the board:
