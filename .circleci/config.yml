@@ -3,7 +3,7 @@ version: 2.1
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-	ci:
+  ci:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: circleci/node:latest
@@ -18,4 +18,4 @@ jobs:
 workflows:
   ci:
     jobs:
-			- ci
+      - ci
