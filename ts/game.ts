@@ -1,4 +1,4 @@
-import { CssClasses, Position } from "types";
+import { CssClasses, Position } from "./types";
 import { AStarFinder } from "./aStarFinder";
 import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, paintPath, randomInt } from "./utils";
 

@@ -1,4 +1,4 @@
-import { CssClasses } from "types";
+import { CssClasses } from "./types";
 
 enum PathClass {
 	openList = 'openList',
