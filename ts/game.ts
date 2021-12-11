@@ -1,6 +1,6 @@
 import { Position } from "types";
 import { AStarFinder } from "./aStarFinder";
-import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, randomInt } from "./utils";
+import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, paintPath, randomInt } from "./utils";
 
 const aStarFinder = new AStarFinder();
 
@@ -27,7 +27,31 @@ restartGameButton.addEventListener('click', () => {
 	restartGame();
 });
 
-function addNext3Balls() {
+export function restartGame(): void {
+	isGameOver = false;
+	boardSize = boardSizeInput.valueAsNumber;
+	numberOfColors = numberOfColorsInput.valueAsNumber;
+	currentScore = 0;
+	currentScoreOutput.innerHTML = '0';
+	randomNext3Colors();
+	drawBoard();
+	// add 3 balls to the board:
+	for (let i = 0; i < 3; i++) {
+		while (true) {
+			let x = randomInt(0, boardSize - 1);
+			let y = randomInt(0, boardSize - 1);
+			if (addNewBall(x, y)) {
+				break;
+			}
+		}
+	}
+}
+
+
+/**
+ * @returns boolean informing whether all 3 balls were added
+ */
+function addNext3Balls(): boolean {
 
 	const newlyAdded = [];
 
@@ -64,7 +88,7 @@ function addNext3Balls() {
 	return true;
 }
 
-function addNewBall(x: number, y: number) {
+function addNewBall(x: number, y: number): boolean {
 	const ballElement = document.createElement('div');
 	const ballColor = randomInt(1, numberOfColors);
 	ballElement.classList.add('ball');
@@ -176,16 +200,16 @@ function drawBoard() {
 function drawPath(from: Position, to: Position) {
 	let path = aStarFinder.findPath(board, from, to, { x: boardSize, y: boardSize });
 	// uncomment if you want to visualize a-star seraching algorithm:
-	// paintPath(path);
+	// paintPath(path as any);
 
 	hoveredTile = { x: to.x, y: to.y, isPath: path.success };
 }
 
-function gameOver() {
+function gameOver(): void {
 	alert('Game over. Your score: ' + currentScore);
 }
 
-function isBoardFull() {
+function isBoardFull(): boolean {
 	return board.every((row) => {
 		return row.every((tile) => {
 			return tile != null
@@ -193,7 +217,7 @@ function isBoardFull() {
 	});
 }
 
-function onTileClick(event: MouseEvent) {
+function onTileClick(event: MouseEvent): void {
 	if (isGameOver) {
 		return;
 	}
@@ -231,7 +255,7 @@ function onTileClick(event: MouseEvent) {
 	}
 }
 
-function onTileHover(event: MouseEvent) {
+function onTileHover(event: MouseEvent): void {
 	// if there is selected tile and target has no child(tile with no ball) and target is not ball:
 	if (selectedTile && (event.target as any).childNodes.length == 0 && !(event.target as any).classList.contains('ball')) {
 		const tile = getTileFromEventTarget(event.target as any);
@@ -239,7 +263,7 @@ function onTileHover(event: MouseEvent) {
 	}
 }
 
-function randomNext3Colors() {
+function randomNext3Colors(): void {
 	nextBallColors = [
 		randomInt(1, numberOfColors),
 		randomInt(1, numberOfColors),
@@ -255,27 +279,7 @@ function randomNext3Colors() {
 	nextBallColorHTMLElements[2].classList.add('color' + nextBallColors[2], 'nextBallColor');
 }
 
-export function restartGame() {
-	isGameOver = false;
-	boardSize = boardSizeInput.valueAsNumber;
-	numberOfColors = numberOfColorsInput.valueAsNumber;
-	currentScore = 0;
-	currentScoreOutput.innerHTML = '0';
-	randomNext3Colors();
-	drawBoard();
-	// add 3 balls to the board:
-	for (let i = 0; i < 3; i++) {
-		while (true) {
-			let x = randomInt(0, boardSize - 1);
-			let y = randomInt(0, boardSize - 1);
-			if (addNewBall(x, y)) {
-				break;
-			}
-		}
-	}
-}
-
-function setGameScore(score: number) {
+function setGameScore(score: number): void {
 	currentScore = score;
 	currentScoreOutput.innerHTML = score + '';
 }

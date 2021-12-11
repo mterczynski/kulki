@@ -1,4 +1,4 @@
-export function boardToTileNodeArray(htmlBoard: Element, boardSize: number) {
+export function boardToTileNodeArray(htmlBoard: Element, boardSize: number): Element[][] {
 	const tileNodes: Element[][] = [];
 	const boardTiles = htmlBoard.querySelectorAll(':scope >*>*');
 
@@ -33,7 +33,7 @@ export function getTilePosition(tile: any, boardHTMLElement: Element, boardSize:
 	return { x, y };
 }
 
-export function clearPaths(tileNodes: Element[][]) {
+export function clearPaths(tileNodes: Element[][]): void {
 	tileNodes.forEach(row => {
 		row.forEach(tile => {
 			tile.classList.remove('openList');
@@ -51,15 +51,15 @@ export function getTileFromEventTarget(eventTarget: HTMLElement): HTMLElement | 
 	return tile;
 }
 
-export function randomFloat(min: number, max: number) {
+export function randomFloat(min: number, max: number): number {
 	return Math.random() * (max - min + 1) + min;
 }
 
-export function randomInt(min: number, max: number) {
+export function randomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-export function paintPath(path: { openList: any[], closedList: any[], finalPath: any[] }, tileNodes: any[]) {
+export function paintPath(path: { openList: any[], closedList: any[], finalPath: any[] }, tileNodes: any[]): void {
 	clearPaths(tileNodes);
 
 	path.openList.forEach((tile) => {
