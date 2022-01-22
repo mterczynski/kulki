@@ -19,10 +19,13 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm test
+       - run:
+          name: Update known_hosts
+          command: |
+            ssh-keyscan -t rsa -H mterczynski.pl >> ~/.ssh/known_hosts
       - run:
           name: Deploy
           command: |
-            ssh-keyscan -t rsa -H mterczynski.pl >> ~/.ssh/known_hosts
             scp -r assets $SSH_URL:$PROJECT_FOLDER
             scp -r css $SSH_URL:$PROJECT_FOLDER
             scp -r dist $SSH_URL:$PROJECT_FOLDER
