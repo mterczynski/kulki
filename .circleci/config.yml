@@ -24,8 +24,8 @@ jobs:
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  ci:
+  test-and-deploy:
     jobs:
-      - ci:
+      - test-and-deploy:
           context:
             - SSH
