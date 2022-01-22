@@ -3,16 +3,26 @@ version: 2.1
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  ci:
+  test-and-deploy:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: circleci/node:lts
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    context:
+      - SSH
     steps:
       - checkout
       - run: npm install
       - run: npm run build
       - run: npm test
+      - run:
+          name: Deploy
+          command: |
+            scp -r assets ${SSH_USER}@${SSH_SERVER}:${PROJECT_FOLDER}
+            scp -r css ${SSH_USER}@${SSH_SERVER}:${PROJECT_FOLDER}
+            scp -r dist ${SSH_USER}@${SSH_SERVER}:${PROJECT_FOLDER}
+            scp -r index.html ${SSH_USER}@${SSH_SERVER}:${PROJECT_FOLDER}/index.html
+
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
