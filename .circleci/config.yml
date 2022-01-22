@@ -19,7 +19,7 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm test
-       - run:
+      - run:
           name: Update known_hosts
           command: |
             ssh-keyscan -t rsa -H mterczynski.pl >> ~/.ssh/known_hosts
