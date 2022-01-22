@@ -1,6 +1,9 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+orbs:
+  shellcheck: circleci/shellcheck@2.2.4
+
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   test-and-deploy:
@@ -16,6 +19,7 @@ jobs:
       - run:
           name: Deploy
           command: |
+            echo $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
             scp -r assets $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
             scp -r css $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
             scp -r dist $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
@@ -26,6 +30,9 @@ jobs:
 workflows:
   test-and-deploy:
     jobs:
+      - shellcheck/check
       - test-and-deploy:
+          requires:
+            - shellcheck/check
           context:
             - SSH
