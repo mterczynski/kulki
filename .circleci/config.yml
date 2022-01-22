@@ -19,7 +19,11 @@ jobs:
       - run:
           name: Deploy
           command: |
+            echo $SSH_USER
+            echo $SSH_SERVER
+            echo $PROJECT_FOLDER
             echo $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
+            echo ${SSH_USER}@${SSH_SERVER}:${PROJECT_FOLDER}
             scp -r assets $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
             scp -r css $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
             scp -r dist $SSH_USER@$SSH_SERVER:$PROJECT_FOLDER
