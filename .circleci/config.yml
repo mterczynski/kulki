@@ -26,6 +26,6 @@ jobs:
 workflows:
   ci:
     jobs:
-      - ci
+      - ci:
         context:
           - SSH
