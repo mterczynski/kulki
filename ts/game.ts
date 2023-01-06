@@ -200,7 +200,7 @@ function drawBoard() {
 function drawPath(from: Position, to: Position) {
 	let path = aStarFinder.findPath(board, from, to, { x: boardSize, y: boardSize });
 	// uncomment if you want to visualize a-star seraching algorithm:
-	// paintPath(path as any);
+	// paintPath(path as any, tileNodes);
 
 	hoveredTile = { x: to.x, y: to.y, isPath: path.success };
 }
