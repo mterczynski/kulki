@@ -21,16 +21,12 @@ jobs:
       - run: npm run build
       - run: npm test
       - run:
-          name: Update known_hosts
-          command: |
-            ssh-keyscan -t rsa -H mterczynski.pl >> ~/.ssh/known_hosts
-      - run:
           name: Deploy
           command: |
-            scp -r assets $SSH_URL:$PROJECT_FOLDER
-            scp -r css $SSH_URL:$PROJECT_FOLDER
-            scp -r dist $SSH_URL:$PROJECT_FOLDER
-            scp -r index.html $SSH_URL:$PROJECT_FOLDER/index.html
+            scp -r assets $SSH_USER@$SERVER_DOMAIN_NAME:$DESTINATION_FOLDER
+            scp -r css $SSH_USER@$SERVER_DOMAIN_NAME:$DESTINATION_FOLDER
+            scp -r dist $SSH_USER@$SERVER_DOMAIN_NAME:$DESTINATION_FOLDER
+            scp -r index.html $SSH_USER@$SERVER_DOMAIN_NAME:$DESTINATION_FOLDER/index.html
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
