@@ -1,9 +1,9 @@
-.color1{ background: hsl(198, 81%, 54%); }
-.color2{ background: hsl(231, 81%, 54%); }
-.color3{ background: hsl(267, 81%, 54%); }
-.color4{ background: hsl(360, 83%, 48%); }
-.color5{ background: hsl(128, 74%, 46%); }
-.color6{ background: hsl(56, 67%, 51%); }
-.color7{ background: hsl(303, 71%, 50%); }
-.color8{ background: hsl(34, 100%, 51%); }
-.color9{ background: hsl(165, 100%, 50%); }
+.color1 { background: radial-gradient(circle at 65% 15%, white 1px, lightyellow 3%, yellow 60%, lightyellow 100%); }
+.color2 { background: radial-gradient(circle at 65% 15%, lightblue 1px, blue 3%, darkblue 60%, blue 100%); }
+.color3 { background: radial-gradient(circle at 65% 15%, pink 1px, red 3%, darkred 60%, red 100%); }
+.color4 { background: radial-gradient(circle at 65% 15%, white 1px, lime 3%, darkgreen 60%, lime 100%); }
+.color5 { background: radial-gradient(circle at 65% 15%, yellow 1px, orange 3%, orangered 60%, orange 100%); }
+.color6 { background: radial-gradient(circle at 65% 15%, violet 1px, mediumpurple 3%, purple 60%, mediumpurple 100%); }
+.color7 { background: radial-gradient(circle at 65% 15%, lightblue 1px, darkblue 3%, black 60%, darkblue 100%); }
+.color8 { background: radial-gradient(circle at 65% 15%, white 1px, lightgreen 3%, aqua 60%, lightgreen 100%); }
+.color9 { background: radial-gradient(circle at 65% 15%, lightgray 1px, gray 3%, darkgray 60%, gray 100%); }

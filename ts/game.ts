@@ -11,7 +11,7 @@ const restartGameButton: Element = document.querySelector('#restartGameButton') 
 const numberOfColorsInput: HTMLInputElement = document.querySelector('#numberOfColorsInput') as HTMLInputElement;
 const currentScoreOutput: Element = document.querySelector('#currentScoreOutput') as Element;
 const nextBallColorHTMLElements: NodeListOf<Element> = document.querySelectorAll('.nextBallColor');
-let tileNodes: any[][]; // two dimensional array of tiles
+let tileNodes: any[][]; // two-dimensional array of tiles
 
 // game variables:
 let boardSize: number;
@@ -36,13 +36,11 @@ export function restartGame(): void {
 	randomNext3Colors();
 	drawBoard();
 	// add 3 balls to the board:
-	for (let i = 0; i < 3; i++) {
-		while (true) {
-			let x = randomInt(0, boardSize - 1);
-			let y = randomInt(0, boardSize - 1);
-			if (addNewBall(x, y)) {
-				break;
-			}
+	for (let i = 0; i < 3;) {
+		let x = randomInt(0, boardSize - 1);
+		let y = randomInt(0, boardSize - 1);
+		if (addNewBall(x, y)) {
+			i++;
 		}
 	}
 }
@@ -55,24 +53,23 @@ function addNext3Balls(): boolean {
 
 	const newlyAdded = [];
 
-	for (let i = 0; i < 3; i++) {
+	for (let i = 0; i < 3;) {
 		if (isBoardFull()) {
 			return false; // loss
 		}
 
-		while (true) { // try to find next free tile in board
-			const posX = randomInt(0, 8);
-			const posY = randomInt(0, 8);
+		// try to find next free tile in board
+		const posX = randomInt(0, 8);
+		const posY = randomInt(0, 8);
 
-			if (board[posX][posY] == null) {
-				const color = nextBallColors[i];
-				const ballNode = document.createElement('div');
-				ballNode.classList.add(CssClasses.ball, 'color' + nextBallColors[i]);
-				tileNodes[posX][posY].appendChild(ballNode);
-				board[posX][posY] = color;
-				newlyAdded.push({ posX, posY, color });
-				break;
-			}
+		if (board[posX][posY] == null) {
+			const color = nextBallColors[i];
+			const ballNode = document.createElement('div');
+			ballNode.classList.add(CssClasses.ball, 'color' + nextBallColors[i]);
+			tileNodes[posX][posY].appendChild(ballNode);
+			board[posX][posY] = color;
+			newlyAdded.push({ posX, posY, color });
+			i++;
 		}
 	}
 
@@ -81,11 +78,7 @@ function addNext3Balls(): boolean {
 		checkFor5({ x: ball.posX, y: ball.posY }, board, ball.color, boardSize);
 	});
 
-	if (isBoardFull()) {
-		return false; // loss
-	}
-
-	return true;
+	return (!isBoardFull());
 }
 
 function addNewBall(x: number, y: number): boolean {
@@ -188,6 +181,7 @@ function drawBoard() {
 		for (let j = 0; j < boardSize; j++) {
 			const tile = document.createElement('div');
 			tile.classList.add('board__row__tile');
+			(j % 2 == 0) ? tile.classList.add('board__row__tile__even') : tile.classList.add('board__row__tile__odd');
 			tile.addEventListener('click', onTileClick);
 			tile.addEventListener('mouseover', onTileHover);
 			row.appendChild(tile);
@@ -199,7 +193,7 @@ function drawBoard() {
 
 function drawPath(from: Position, to: Position) {
 	let path = aStarFinder.findPath(board, from, to, { x: boardSize, y: boardSize });
-	// uncomment if you want to visualize a-star seraching algorithm:
+	// uncomment if you want to visualize a-star searching algorithm:
 	// paintPath(path as any, tileNodes);
 
 	hoveredTile = { x: to.x, y: to.y, isPath: path.success };
