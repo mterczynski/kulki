@@ -15,7 +15,7 @@
 }
 
 .menu >:nth-child(1) {
-    background: #5BC0EB; 
+    background: #5BC0EB;
     border-top: none;
 }
 .menu >:nth-child(2) {
@@ -25,13 +25,16 @@
     background: #9BC53D;
 }
 .menu >:nth-child(4) {
-    background: #E55934;
+	background: #34e5b3;
 }
 .menu >:nth-child(5) {
+    background: #E55934;
+}
+.menu >:nth-child(6) {
     background: #FA7921;
 }
 
-.menu .boardSize__input, .menu .numberOfColors__input{
+.menu .boardSize__input, .menu .numberOfColors__input, .menu .paintPath__input{
     position: absolute;
     display: block;
     background: white;
@@ -57,17 +60,17 @@
 .menu .restartGameButton{
     background: white;
     font-size: 24px;
-    height: 30%;   
+    height: 30%;
     left: 50%;
     position: absolute;
     top: 50%;
-    transform: translate(-50%, -50%); 
-    width: 60%;  
+    transform: translate(-50%, -50%);
+    width: 60%;
 }
 
 .menu .currentScoreOutput{
     font-size: 24px;
-    text-align: center; 
+    text-align: center;
 }
 
 .menu .nextBallColor{

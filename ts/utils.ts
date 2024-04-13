@@ -71,17 +71,23 @@ export function randomInt(min: number, max: number): number {
 export function paintPath(path: { openList: any[], closedList: any[], finalPath: any[] }, tileNodes: any[]): void {
 	clearPaths(tileNodes);
 
-	path.openList.forEach((tile) => {
-		tileNodes[tile.x][tile.y].classList.add(PathClass.openList);
-	});
+	// uncomment these 2 blocks if you want to visualize the A* algorithm
 
-	path.closedList.forEach((tile) => {
-		tileNodes[tile.x][tile.y].classList.add(PathClass.closedList);
-	});
+	// path.openList.forEach((tile) => {
+	// 	tileNodes[tile.x][tile.y].classList.add(PathClass.openList);
+	// });
+
+	// path.closedList.forEach((tile) => {
+	// 	tileNodes[tile.x][tile.y].classList.add(PathClass.closedList);
+	// });
 
 	if (path.finalPath) {
 		path.finalPath.forEach((tile) => {
 			tileNodes[tile.x][tile.y].classList.add(PathClass.finalPath);
+		});
+	} else {
+		path.closedList.forEach((tile) => {
+			tileNodes[tile.x][tile.y].classList.add(PathClass.closedList);
 		});
 	}
 }

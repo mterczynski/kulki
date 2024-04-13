@@ -8,6 +8,7 @@ const aStarFinder = new AStarFinder();
 const boardHTMLElement: Element = document.querySelector('#board') as Element;
 const boardSizeInput: HTMLInputElement = document.querySelector('#boardSizeInput') as HTMLInputElement;
 const restartGameButton: Element = document.querySelector('#restartGameButton') as Element;
+const paintPathInput: HTMLInputElement = document.querySelector('#paintPath') as HTMLInputElement;
 const numberOfColorsInput: HTMLInputElement = document.querySelector('#numberOfColorsInput') as HTMLInputElement;
 const currentScoreOutput: Element = document.querySelector('#currentScoreOutput') as Element;
 const nextBallColorHTMLElements: NodeListOf<Element> = document.querySelectorAll('.nextBallColor');
@@ -193,8 +194,9 @@ function drawBoard() {
 
 function drawPath(from: Position, to: Position) {
 	let path = aStarFinder.findPath(board, from, to, { x: boardSize, y: boardSize });
-	// uncomment if you want to visualize a-star searching algorithm:
-	// paintPath(path as any, tileNodes);
+	if (paintPathInput.checked) {
+		paintPath(path as any, tileNodes);
+	}
 
 	hoveredTile = { x: to.x, y: to.y, isPath: path.success };
 }
@@ -251,7 +253,11 @@ function onTileClick(event: MouseEvent): void {
 
 function onTileHover(event: MouseEvent): void {
 	// if there is selected tile and target has no child(tile with no ball) and target is not ball:
-	if (selectedTile && (event.target as any).childNodes.length == 0 && !(event.target as any).classList.contains(CssClasses.ball)) {
+	if (
+		selectedTile &&
+		(event.target as any).childNodes.length == 0 &&
+		!(event.target as any).classList.contains(CssClasses.ball)
+	) {
 		const tile = getTileFromEventTarget(event.target as any);
 		drawPath(selectedTile, getTilePosition(tile, boardHTMLElement, boardSize) as Position);
 	}
