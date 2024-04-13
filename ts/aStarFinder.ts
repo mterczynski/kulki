@@ -1,7 +1,7 @@
 import { BoardSize, Position } from './types';
 
 export class AStarFinder {
-	// Manhattan heuristic:
+	/** This method uses Manhattan distance */
 	private getEstimate(from: Position, to: Position) {
 		return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
 	}
@@ -9,12 +9,13 @@ export class AStarFinder {
 	private getTileScore(tile: { estimate: number, travelCost: number }) {
 		return tile.estimate + tile.travelCost;
 	}
-	// return array of tiles sorted by their score
+
+	/** Returns an array of tiles sorted by their score */
 	private getFreeAdjacentTiles(currentPos: Position, board: any[][], currentTravelCost: number, boardSize: BoardSize, targetPos: Position) {
 		const adjacentTiles = [];
 		for (let x = -1; x <= 1; x++) {
 			for (let y = -1; y <= 1; y++) {
-				if ((x != 0 || y != 0) && Math.abs(x % 2) != Math.abs(y % 2)) { // no self-pos and no diagonal tiles
+				if ((x != 0 || y != 0) && Math.abs(x % 2) != Math.abs(y % 2)) { // exclude current and diagonal tiles
 					let tilePos = { x: currentPos.x + x, y: currentPos.y + y };
 					let posExists = tilePos.x >= 0 && tilePos.x < boardSize.x && tilePos.y >= 0 && tilePos.y < boardSize.y;
 					if (posExists) {
