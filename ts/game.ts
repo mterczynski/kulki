@@ -261,19 +261,12 @@ function onTileHover(event: MouseEvent): void {
 }
 
 function randomNext3Colors(): void {
-	nextBallColors = [
-		randomInt(1, numberOfColors),
-		randomInt(1, numberOfColors),
-		randomInt(1, numberOfColors),
-	];
+	nextBallColors = Array.from({ length: 3 }, () => randomInt(1, numberOfColors));
 
-	nextBallColorHTMLElements[0].className = '';
-	nextBallColorHTMLElements[1].className = '';
-	nextBallColorHTMLElements[2].className = '';
-
-	nextBallColorHTMLElements[0].classList.add('color' + nextBallColors[0], 'nextBallColor');
-	nextBallColorHTMLElements[1].classList.add('color' + nextBallColors[1], 'nextBallColor');
-	nextBallColorHTMLElements[2].classList.add('color' + nextBallColors[2], 'nextBallColor');
+	nextBallColorHTMLElements.forEach((element, index) => {
+		element.className = ''
+		element.classList.add('color' + nextBallColors[index], 'nextBallColor');
+	});
 }
 
 function setGameScore(score: number): void {
