@@ -145,7 +145,7 @@ function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSiz
 	let diagonal2 = checkInDirection(1, 1);
 	let horizontal = checkInDirection(1, 0);
 
-	let ballsToRemove = diagonal1.concat(vertical).concat(diagonal2).concat(horizontal);
+	let ballsToRemove = [...diagonal1, ...diagonal2, ...vertical, ...horizontal]
 
 	if (ballsToRemove.length > 0) {
 		let removedCount = 0;
