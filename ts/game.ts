@@ -251,12 +251,10 @@ function onTileClick(event: MouseEvent): void {
 }
 
 function onTileHover(event: MouseEvent): void {
-	// if there is selected tile and target has no child(tile with no ball) and target is not ball:
-	if (
-		selectedTile &&
-		(event.target as any).childNodes.length == 0 &&
+	// if there is a selected tile and target tile is empty:
+	const isTargetTileEmpty = (event.target as any).childNodes.length == 0 &&
 		!(event.target as any).classList.contains(CssClasses.ball)
-	) {
+	if (selectedTile && isTargetTileEmpty) {
 		const tile = getTileFromEventTarget(event.target as any);
 		drawPath(selectedTile, getTilePosition(tile, boardHTMLElement, boardSize) as Position);
 	}
