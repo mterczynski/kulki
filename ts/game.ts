@@ -67,7 +67,12 @@ function addNext3Balls(): boolean {
 			const color = nextBallColors[i];
 			const ballNode = document.createElement('div');
 			ballNode.classList.add(CssClasses.ball, 'color' + nextBallColors[i]);
-			tileNodes[posX][posY].appendChild(ballNode);
+			try {
+				tileNodes[posX][posY].appendChild(ballNode);
+			} catch (err) {
+				debugger
+				throw err
+			}
 			board[posX][posY] = color;
 			newlyAdded.push({ posX, posY, color });
 			i++;

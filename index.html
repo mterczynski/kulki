@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Kulki</title>
-    <!-- Styles: -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/colors.css">
-</head>
-<body>
-
-    <div id="board" class="board"></div>
-    <div class="menu">
-        <div class="boardSize">
-            <h3 class="header">Board size:</h3>
-            <input type="number" id="boardSizeInput" class="boardSize__input" min="5" max="300" value="9">
-        </div>
-        <div class="resetGame">
-            <h3 class="header">Restart:</h3>
-            <button id="restartGameButton" class="restartGameButton">Restart</button>
-        </div>
-        <div class="numberOfColors">
-            <h3 class="header">Colors:</h3>
-            <input type="number" id="numberOfColorsInput" class="numberOfColors__input" min="2" max="8" value="6">
-        </div>
-				<div class="paintPath">
-					<h3 class="header">Paint path:</h3>
-					<input type="checkbox" id="paintPath" class="paintPath__input">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Kulki</title>
+		<!-- Styles: -->
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/menu.css" />
+		<link rel="stylesheet" href="css/colors.css" />
+	</head>
+	<body>
+		<div id="board" class="board"></div>
+		<div class="menu">
+			<div class="boardSize">
+				<h3 class="header">Board size:</h3>
+				<input type="number" id="boardSizeInput" class="boardSize__input" min="5" max="300" value="9" />
+			</div>
+			<div class="resetGame">
+				<h3 class="header">Restart:</h3>
+				<button id="restartGameButton" class="restartGameButton">Restart</button>
+			</div>
+			<div class="numberOfColors">
+				<h3 class="header">Colors:</h3>
+				<input type="number" id="numberOfColorsInput" class="numberOfColors__input" min="2" max="8" value="6" />
+			</div>
+			<div class="paintPath">
+				<h3 class="header">Paint path:</h3>
+				<input type="checkbox" id="paintPath" class="paintPath__input" />
+			</div>
+			<div class="currentScore">
+				<h3 class="header">Score:</h3>
+				<p id="currentScoreOutput" class="currentScoreOutput">0</p>
+			</div>
+			<div>
+				<h3 class="header">Next:</h3>
+				<div class="nextBallColors">
+					<div class="nextBallColor"></div>
+					<div class="nextBallColor"></div>
+					<div class="nextBallColor"></div>
 				</div>
-        <div class="currentScore">
-            <h3 class="header">Score: </h3>
-            <p id="currentScoreOutput" class="currentScoreOutput">0</p>
-        </div>
-        <div>
-            <h3 class="header">Next: </h3>
-            <div class="nextBallColors">
-               <div class="nextBallColor"></div>
-               <div class="nextBallColor"></div>
-               <div class="nextBallColor"></div>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
 
-    <script src="dist/bundle.js"></script>
-    <!-- <script src="js/aStarFinder.js"></script>
+		<!-- <script src="dist/bundle.js"></script> -->
+		<script type="module" src="ts/index.ts"></script>
+		<!-- <script src="js/aStarFinder.js"></script>
     <script src="js/game.js"></script>
     <script src="js/utils.js"></script>
     <script>
         restartGame();
     </script> -->
-</body>
+	</body>
 </html>

@@ -4,10 +4,9 @@
   "description": "My version of a game called Kulki/Color lines. I've used my own implementation of A* pathfinding algorithm.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve",
-    "start:open": "webpack serve --open",
-    "test": "echo \"no tests declared yet\"",
-    "build": "webpack --mode=production"
+		"start": "vite",
+    "build": "tsc && vite build",
+    "test": "echo \"no tests declared yet\""
   },
   "repository": {
     "type": "git",
@@ -25,8 +24,6 @@
   },
   "devDependencies": {
     "ts-loader": "^9.5.1",
-    "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4"
+    "vite": "^5.2.10"
   }
 }
