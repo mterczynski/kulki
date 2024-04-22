@@ -56,10 +56,10 @@ function addNext3Balls(): boolean {
 
 	for (let i = 0; i < 3;) {
 		if (isBoardFull()) {
-			return false; // loss
+			return false; // board full, game over
 		}
 
-		// try to find next free tile in board
+		// try to find a next free tile in board
 		const posX = randomInt(0, boardSize - 1);
 		const posY = randomInt(0, boardSize - 1);
 
@@ -74,7 +74,7 @@ function addNext3Balls(): boolean {
 		}
 	}
 
-	// for every nextBall: check for 5 in a row after adding it
+	// for every nextBall: check for 5+ in a row after adding it
 	newlyAdded.forEach((ball) => {
 		checkFor5({ x: ball.posX, y: ball.posY }, board, ball.color, boardSize);
 	});
