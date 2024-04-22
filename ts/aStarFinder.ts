@@ -1,4 +1,4 @@
-import { BoardSize, Position } from './types';
+import { Position } from './types';
 
 export class AStarFinder {
 	/** This method uses Manhattan distance */
@@ -11,13 +11,13 @@ export class AStarFinder {
 	}
 
 	/** Returns an array of tiles sorted by their score */
-	private getFreeAdjacentTiles(currentPos: Position, board: any[][], currentTravelCost: number, boardSize: BoardSize, targetPos: Position) {
+	private getFreeAdjacentTiles(currentPos: Position, board: any[][], currentTravelCost: number, boardSize: number, targetPos: Position) {
 		const adjacentTiles = [];
 		for (let x = -1; x <= 1; x++) {
 			for (let y = -1; y <= 1; y++) {
 				if ((x != 0 || y != 0) && Math.abs(x % 2) != Math.abs(y % 2)) { // exclude current and diagonal tiles
 					let tilePos = { x: currentPos.x + x, y: currentPos.y + y };
-					let posExists = tilePos.x >= 0 && tilePos.x < boardSize.x && tilePos.y >= 0 && tilePos.y < boardSize.y;
+					let posExists = tilePos.x >= 0 && tilePos.x < boardSize && tilePos.y >= 0 && tilePos.y < boardSize;
 					if (posExists) {
 						let adjacentTileValue = board[tilePos.x][tilePos.y];
 						if (adjacentTileValue == null) {
@@ -65,7 +65,7 @@ export class AStarFinder {
 		}
 	}
 
-	findPath(array: any[], from: Position, targetPos: Position, arraySize: BoardSize) {
+	findPath(array: any[], from: Position, targetPos: Position, arraySize: number) {
 		if (from.x == targetPos.x && from.y == targetPos.y) {
 			return { success: false, openList: [], closedList: [] };
 		}

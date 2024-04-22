@@ -195,7 +195,7 @@ function drawBoard() {
 }
 
 function drawPath(from: Position, to: Position) {
-	let path = aStarFinder.findPath(board, from, to, { x: boardSize, y: boardSize });
+	let path = aStarFinder.findPath(board, from, to, boardSize);
 	if (paintPathInput.checked) {
 		paintPath(path as any, tileNodes);
 	}
