@@ -60,19 +60,14 @@ function addNext3Balls(): boolean {
 		}
 
 		// try to find next free tile in board
-		const posX = randomInt(0, 8);
-		const posY = randomInt(0, 8);
+		const posX = randomInt(0, boardSize - 1);
+		const posY = randomInt(0, boardSize - 1);
 
 		if (board[posX][posY] == null) {
 			const color = nextBallColors[i];
 			const ballNode = document.createElement('div');
 			ballNode.classList.add(CssClasses.ball, 'color' + nextBallColors[i]);
-			try {
-				tileNodes[posX][posY].appendChild(ballNode);
-			} catch (err) {
-				// debugger
-				throw err
-			}
+			tileNodes[posX][posY].appendChild(ballNode);
 			board[posX][posY] = color;
 			newlyAdded.push({ posX, posY, color });
 			i++;
