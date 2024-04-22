@@ -70,7 +70,7 @@ function addNext3Balls(): boolean {
 			try {
 				tileNodes[posX][posY].appendChild(ballNode);
 			} catch (err) {
-				debugger
+				// debugger
 				throw err
 			}
 			board[posX][posY] = color;
