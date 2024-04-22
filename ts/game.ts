@@ -48,17 +48,17 @@ export function restartGame(): void {
 
 
 /**
- * @returns boolean informing whether all 3 balls were added
+ * @returns a boolean informing whether all 3 balls were added
  */
 function addNext3Balls(): boolean {
 	const newlyAdded = [];
 
 	for (let i = 0; i < 3;) {
 		if (isBoardFull()) {
-			return false; // board full, game over
+			return false; // board is full, game over
 		}
 
-		// try to find a next free tile in board
+		// try to find a next free tile in the board
 		const posX = randomInt(0, boardSize - 1);
 		const posY = randomInt(0, boardSize - 1);
 
@@ -81,17 +81,20 @@ function addNext3Balls(): boolean {
 	return !isBoardFull();
 }
 
+/**
+ * @returns a boolean that says whether adding the ball was successful
+ */
 function addNewBall(x: number, y: number): boolean {
 	const ballElement = document.createElement('div');
 	const ballColor = randomInt(1, numberOfColors);
 	ballElement.classList.add(CssClasses.ball);
 	ballElement.classList.add('color' + ballColor);
 	const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
-	if (tile.childNodes.length > 0) {
-		return false;   // if tile is busy stop function, return false
+	const isTileBusy = tile.childNodes.length > 0
+	if (isTileBusy) {
+		return false;
 	}
 	tile.appendChild(ballElement);
-	// numberOfBusyTiles++;
 	board[x][y] = ballColor;
 	return true;
 }
@@ -122,12 +125,12 @@ function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSiz
 				}
 			}
 
-			// 2. if next color is the same, add it to line
+			// 2. if next color is the same, add it to the line
 			if (board[x][y] == movedColor) {
 				line.push({ x, y });
 			} else { // no more balls of the same color in this direction, change direction
 				if (iDir == 1) {
-					i = 0; // will be -1 after iteration
+					i = 0; // will be -1 after an iteration
 					iDir = -1;
 				} else {
 					if (line.length >= 5) {
