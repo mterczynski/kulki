@@ -51,7 +51,6 @@ export function restartGame(): void {
  * @returns boolean informing whether all 3 balls were added
  */
 function addNext3Balls(): boolean {
-
 	const newlyAdded = [];
 
 	for (let i = 0; i < 3;) {
@@ -79,7 +78,7 @@ function addNext3Balls(): boolean {
 		checkFor5({ x: ball.posX, y: ball.posY }, board, ball.color, boardSize);
 	});
 
-	return (!isBoardFull());
+	return !isBoardFull();
 }
 
 function addNewBall(x: number, y: number): boolean {
