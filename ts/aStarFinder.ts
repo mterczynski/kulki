@@ -1,7 +1,7 @@
 import { Position } from './types';
 
+/** This method uses Manhattan distance */
 export class AStarFinder {
-	/** This method uses Manhattan distance */
 	private getEstimate(from: Position, to: Position) {
 		return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
 	}
