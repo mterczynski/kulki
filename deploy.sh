@@ -1,3 +1,5 @@
+# !. (manual) npm i; npm run build; add "./" to import paths in index.html // todo - make it automatic
+
 # 2. Update build in ../mterczynski.github.io
 rm -rf ../mterczynski.github.io/kulki
 mkdir ../mterczynski.github.io/kulki
