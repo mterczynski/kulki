@@ -175,8 +175,8 @@ function drawBoard() {
 		boardHTMLElement.removeChild(boardHTMLElement.firstChild);
 	}
 	board = [];
-	for (let i = 0; i < 5; i++) {
-		board.push(Array(5).fill(null));
+	for (let i = 0; i < boardSize; i++) {
+		board.push(Array(boardSize).fill(null));
 	}
 
 	// Draw new rows and tiles:
