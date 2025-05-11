@@ -1,7 +1,3 @@
-# 1. Rebuild
-npm i;
-npm run build;
-
 # 2. Update build in ../mterczynski.github.io
 rm -rf ../mterczynski.github.io/kulki
 mkdir ../mterczynski.github.io/kulki
