@@ -3,6 +3,7 @@ import { AStarFinder } from "./aStarFinder";
 import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, paintPath, randomInt } from "./utils";
 
 const aStarFinder = new AStarFinder();
+const localStorageKey = 'kulki_scores';
 
 // html elements:
 const boardHTMLElement: Element = document.querySelector('#board') as Element;
@@ -212,7 +213,7 @@ function gameOver(): void {
 
 function saveScore(score: number): void {
     try {
-        const scores: ScoreRecord[] = JSON.parse(localStorage.getItem('scores') || '[]');
+        const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
 
         if (!Array.isArray(scores)) {
             throw new Error('Invalid scores data in localStorage');
@@ -240,7 +241,7 @@ function saveScore(score: number): void {
                 : newRecord;
         }
 
-        localStorage.setItem('scores', JSON.stringify(scores));
+        localStorage.setItem(localStorageKey, JSON.stringify(scores));
     } catch (error) {
         console.error('Failed to save score:', error);
     }
@@ -317,7 +318,7 @@ function setGameScore(score: number): void {
 }
 
 function getBestScore(): number {
-	const scores: ScoreRecord[] = JSON.parse(localStorage.getItem('scores') || '[]');
+	const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
 
 	const bestScore = scores.find(
 		(scoreRecord) =>
