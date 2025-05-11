@@ -103,6 +103,8 @@ function addNewBall(x: number, y: number): boolean {
 
 function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSize: number) { // todo: fix, not always working
 	// todo: fix vertical, horizontal
+	const minLineLength = 5;
+
 	function checkInDirection(dirX: number, dirY: number) {
 
 		let line = [movedPos];
@@ -119,7 +121,7 @@ function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSiz
 					iDir = -1;
 					continue;
 				} else {
-					if (line.length >= 5) {
+					if (line.length >= minLineLength) {
 						return line;
 					} else {
 						return [];
@@ -135,7 +137,7 @@ function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSiz
 					i = 0; // will be -1 after an iteration
 					iDir = -1;
 				} else {
-					if (line.length >= 5) {
+					if (line.length >= minLineLength) {
 						return line;
 					} else {
 						return [];
