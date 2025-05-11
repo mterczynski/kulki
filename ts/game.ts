@@ -36,6 +36,7 @@ export function restartGame(): void {
 	currentScoreOutput.innerHTML = '0';
 	randomNext3Colors();
 	drawBoard();
+	displayBestScore();
 	// add 3 balls to the board:
 	for (let i = 0; i < 3;) {
 		let x = randomInt(0, boardSize - 1);
@@ -205,6 +206,7 @@ function drawPath(from: Position, to: Position) {
 
 function gameOver(): void {
 	saveScore(currentScore);
+	displayBestScore();
 	alert('Game over. Your score: ' + currentScore);
 }
 
@@ -312,4 +314,21 @@ function randomNext3Colors(): void {
 function setGameScore(score: number): void {
 	currentScore = score;
 	currentScoreOutput.innerHTML = score + '';
+}
+
+function getBestScore(): number {
+	const scores: ScoreRecord[] = JSON.parse(localStorage.getItem('scores') || '[]');
+
+	const bestScore = scores.find(
+		(scoreRecord) =>
+			scoreRecord.boardSize === boardSize &&
+			scoreRecord.numberOfColors === numberOfColors
+	);
+
+	return bestScore?.score || 0;
+}
+
+function displayBestScore(): void {
+	const bestScoreElement = document.querySelector('#bestScoreOutput') as HTMLSpanElement;
+	bestScoreElement.innerHTML = getBestScore() + '';
 }
