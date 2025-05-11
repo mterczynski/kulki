@@ -1,4 +1,4 @@
-import { CssClasses, Position } from "./types";
+import { CssClasses, Position, ScoreRecord } from "./types";
 import { AStarFinder } from "./aStarFinder";
 import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, paintPath, randomInt } from "./utils";
 
@@ -204,7 +204,26 @@ function drawPath(from: Position, to: Position) {
 }
 
 function gameOver(): void {
+	saveScore(currentScore);
 	alert('Game over. Your score: ' + currentScore);
+}
+
+function saveScore(score: number): void {
+	const scores: ScoreRecord[] = JSON.parse(localStorage.getItem('scores') || '[]');
+
+	let record = scores.find(scoreRecord => scoreRecord.boardSize == boardSize && scoreRecord.numberOfColors == numberOfColors);
+
+	if(!record) {
+		record = {} as ScoreRecord
+		scores.push(record);
+	}
+
+	record.dateAchieved = new Date().toISOString();
+	record.score = score;
+	record.boardSize = boardSize;
+	record.numberOfColors = numberOfColors;
+
+	localStorage.setItem('scores', JSON.stringify(scores));
 }
 
 function isBoardFull(): boolean {
