@@ -209,21 +209,39 @@ function gameOver(): void {
 }
 
 function saveScore(score: number): void {
-	const scores: ScoreRecord[] = JSON.parse(localStorage.getItem('scores') || '[]');
+    try {
+        const scores: ScoreRecord[] = JSON.parse(localStorage.getItem('scores') || '[]');
 
-	let record = scores.find(scoreRecord => scoreRecord.boardSize == boardSize && scoreRecord.numberOfColors == numberOfColors);
+        if (!Array.isArray(scores)) {
+            throw new Error('Invalid scores data in localStorage');
+        }
 
-	if(!record) {
-		record = {} as ScoreRecord
-		scores.push(record);
-	}
+        const recordIndex = scores.findIndex(
+            (scoreRecord) =>
+                scoreRecord.boardSize === boardSize &&
+                scoreRecord.numberOfColors === numberOfColors
+        );
 
-	record.dateAchieved = new Date().toISOString();
-	record.score = score;
-	record.boardSize = boardSize;
-	record.numberOfColors = numberOfColors;
+        const newRecord: ScoreRecord = {
+            dateAchieved: new Date().toISOString(),
+            score,
+            boardSize,
+            numberOfColors,
+        };
 
-	localStorage.setItem('scores', JSON.stringify(scores));
+        if (recordIndex === -1) {
+            scores.push(newRecord);
+        } else {
+            // Optionally keep the highest score
+            scores[recordIndex] = scores[recordIndex].score > score
+                ? scores[recordIndex]
+                : newRecord;
+        }
+
+        localStorage.setItem('scores', JSON.stringify(scores));
+    } catch (error) {
+        console.error('Failed to save score:', error);
+    }
 }
 
 function isBoardFull(): boolean {
