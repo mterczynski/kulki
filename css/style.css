@@ -13,7 +13,11 @@
 }
 
 body{
+    min-height: 100vh;
+    min-width: 100vw;
     overflow: hidden;
+    display: flex;
+    align-items: center;
     background: rgba(2, 204, 255, 0.3);
 }
 
@@ -48,13 +52,20 @@ body{
     border: 1px solid black;
     display: flex;
     flex-direction: column;
-    left: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    /* left: 50%; */
+    /* position: absolute; */
+    /* top: 50%;
+    transform: translate(-50%, -50%); */
     height: 60vmin;
     width: 60vmin;
     background: rgb(230, 230, 230);
+}
+
+.board-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    position: relative;
 }
 
 .board__row{
