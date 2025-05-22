@@ -2,6 +2,82 @@ import { Position } from './types';
 
 /** This method uses Manhattan distance */
 export class AStarFinder {
+	findPath(array: any[], from: Position, targetPos: Position, arraySize: number) {
+		if (from.x == targetPos.x && from.y == targetPos.y) {
+			return { success: false, openList: [], closedList: [] };
+		}
+
+		let openList: any[] = [];
+		let currentPos = { x: from.x, y: from.y, travelCost: 0 };
+		const closedList = [currentPos];
+
+		// add adjacent tiles to open list:
+		const adjacentTiles = this.getFreeAdjacentTiles(currentPos, array, 0, arraySize, targetPos);
+		adjacentTiles.forEach((el) => {
+			openList.push(el);
+		});
+
+		while (openList.length !== 0) {
+			// 1. if openList is empty -> no more field to check -> no path
+
+			// 2. get the best tile from open list
+			let bestTileFromOpenList = openList.sort((a, b) => {
+				return this.getTileScore(a) - this.getTileScore(b);
+			})[0];
+			// 3. change position to the best tile and move it from openList to closedList
+			currentPos = bestTileFromOpenList;
+			closedList.push(openList.shift());
+			// 4. if currentPos == targetPos compute final path:
+			if (currentPos.x == targetPos.x && currentPos.y == targetPos.y) {
+				// compute and return final path:
+				const finalPath = [currentPos];
+
+				while (!(currentPos.x == from.x && currentPos.y == from.y)) {
+					const adjacentTiles = this.getAdjacentFromClosedList(closedList, currentPos);
+
+					adjacentTiles.some((tile) => {
+						if (currentPos.travelCost - 1 == tile.travelCost) {
+							finalPath.push(tile);
+							currentPos = tile;
+							return true;
+						}
+					});
+				}
+
+				return { success: true, openList, closedList, finalPath };
+			}
+			// 5. get adjacent tiles
+			const adjacentTiles = this.getFreeAdjacentTiles(
+				currentPos,
+				array,
+				currentPos.travelCost,
+				arraySize,
+				targetPos
+			);
+			// 6. forEach adjTile do action depending on in which list is the tile
+			adjacentTiles.forEach((adjTile) => {
+				// 6.1. if tile is in the closed list, ignore it
+				if (this.checkIfPointInList(adjTile, closedList)) {
+					// do nothing
+				}
+				// 6.2. if tile is not in the open list: add it to open list.
+				else if (!this.checkIfPointInList(adjTile, openList)) {
+					this.addUniquePointToArray(adjTile, openList);
+				}
+				// 6.3. if title is in the open list:
+				else {
+					// Check if the travelCost is lower when we use the current generated path to get there.
+					// If it is, update its score and update its parent as well.
+					if (adjTile.travelCost > currentPos.travelCost + 1) {
+						adjTile.travelCost = currentPos.travelCost + 1;
+					}
+				}
+			});
+		}
+
+		return { success: false, openList, closedList };
+	}
+
 	private getEstimate(from: Position, to: Position) {
 		return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
 	}
@@ -80,81 +156,5 @@ export class AStarFinder {
 		} else {
 			return false;
 		}
-	}
-
-	findPath(array: any[], from: Position, targetPos: Position, arraySize: number) {
-		if (from.x == targetPos.x && from.y == targetPos.y) {
-			return { success: false, openList: [], closedList: [] };
-		}
-
-		let openList: any[] = [];
-		let currentPos = { x: from.x, y: from.y, travelCost: 0 };
-		const closedList = [currentPos];
-
-		// add adjacent tiles to open list:
-		const adjacentTiles = this.getFreeAdjacentTiles(currentPos, array, 0, arraySize, targetPos);
-		adjacentTiles.forEach((el) => {
-			openList.push(el);
-		});
-
-		while (openList.length !== 0) {
-			// 1. if openList is empty -> no more field to check -> no path
-
-			// 2. get the best tile from open list
-			let bestTileFromOpenList = openList.sort((a, b) => {
-				return this.getTileScore(a) - this.getTileScore(b);
-			})[0];
-			// 3. change position to the best tile and move it from openList to closedList
-			currentPos = bestTileFromOpenList;
-			closedList.push(openList.shift());
-			// 4. if currentPos == targetPos compute final path:
-			if (currentPos.x == targetPos.x && currentPos.y == targetPos.y) {
-				// compute and return final path:
-				const finalPath = [currentPos];
-
-				while (!(currentPos.x == from.x && currentPos.y == from.y)) {
-					const adjacentTiles = this.getAdjacentFromClosedList(closedList, currentPos);
-
-					adjacentTiles.some((tile) => {
-						if (currentPos.travelCost - 1 == tile.travelCost) {
-							finalPath.push(tile);
-							currentPos = tile;
-							return true;
-						}
-					});
-				}
-
-				return { success: true, openList, closedList, finalPath };
-			}
-			// 5. get adjacent tiles
-			const adjacentTiles = this.getFreeAdjacentTiles(
-				currentPos,
-				array,
-				currentPos.travelCost,
-				arraySize,
-				targetPos
-			);
-			// 6. forEach adjTile do action depending on in which list is the tile
-			adjacentTiles.forEach((adjTile) => {
-				// 6.1. if tile is in the closed list, ignore it
-				if (this.checkIfPointInList(adjTile, closedList)) {
-					// do nothing
-				}
-				// 6.2. if tile is not in the open list: add it to open list.
-				else if (!this.checkIfPointInList(adjTile, openList)) {
-					this.addUniquePointToArray(adjTile, openList);
-				}
-				// 6.3. if title is in the open list:
-				else {
-					// Check if the travelCost is lower when we use the current generated path to get there.
-					// If it is, update its score and update its parent as well.
-					if (adjTile.travelCost > currentPos.travelCost + 1) {
-						adjTile.travelCost = currentPos.travelCost + 1;
-					}
-				}
-			});
-		}
-
-		return { success: false, openList, closedList };
 	}
 }
