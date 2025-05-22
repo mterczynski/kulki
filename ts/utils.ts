@@ -1,14 +1,14 @@
-import { CssClasses } from "./types";
+import { CssClasses } from './types';
 
 enum PathClass {
-	openList = "openList",
-	closedList = "closedList",
-	finalPath = "finalPath",
+	openList = 'openList',
+	closedList = 'closedList',
+	finalPath = 'finalPath',
 }
 
 export function boardToTileNodeArray(htmlBoard: Element, boardSize: number): Element[][] {
 	const tileNodes: Element[][] = [];
-	const boardTiles = htmlBoard.querySelectorAll(":scope >*>*");
+	const boardTiles = htmlBoard.querySelectorAll(':scope >*>*');
 
 	for (let i = 0; i < boardSize; i++) {
 		tileNodes.push([]);
@@ -22,7 +22,7 @@ export function boardToTileNodeArray(htmlBoard: Element, boardSize: number): Ele
 }
 
 export function getTilePosition(tile: any, boardHTMLElement: Element, boardSize: number) {
-	const boardRows = boardHTMLElement.querySelectorAll(":scope >*");
+	const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
 
 	let x: number | undefined;
 	let y: number | undefined;
@@ -64,7 +64,11 @@ export function randomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-export function paintPath(path: { openList: any[]; closedList: any[]; finalPath: any[] }, tileNodes: any[], debugMode = false): void {
+export function paintPath(
+	path: { openList: any[]; closedList: any[]; finalPath: any[] },
+	tileNodes: any[],
+	debugMode = false
+): void {
 	clearPaths(tileNodes);
 
 	// uncomment these 2 blocks if you want to visualize the A* algorithm

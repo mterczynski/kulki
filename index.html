@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -14,7 +14,14 @@
 		<div class="menu">
 			<div class="boardSize">
 				<h3 class="header">Board size:</h3>
-				<input type="number" id="boardSizeInput" class="boardSize__input" min="5" max="300" value="9" />
+				<input
+					type="number"
+					id="boardSizeInput"
+					class="boardSize__input"
+					min="5"
+					max="300"
+					value="9"
+				/>
 			</div>
 			<div class="resetGame">
 				<h3 class="header">Restart:</h3>
@@ -22,7 +29,14 @@
 			</div>
 			<div class="numberOfColors">
 				<h3 class="header">Colors:</h3>
-				<input type="number" id="numberOfColorsInput" class="numberOfColors__input" min="2" max="8" value="6" />
+				<input
+					type="number"
+					id="numberOfColorsInput"
+					class="numberOfColors__input"
+					min="2"
+					max="8"
+					value="6"
+				/>
 			</div>
 			<div class="paintPath">
 				<h3 class="header">Paint path:</h3>
@@ -46,7 +60,6 @@
 		<div class="board-container">
 			<div id="board" class="board"></div>
 		</div>
-		
 
 		<script type="module" src="ts/index.ts"></script>
 		<!-- <script src="js/aStarFinder.js"></script>

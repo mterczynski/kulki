@@ -1,16 +1,27 @@
-import { CssClasses, Position, ScoreRecord } from "./types";
-import { AStarFinder } from "./aStarFinder";
-import { boardToTileNodeArray, clearPaths, getTileFromEventTarget, getTilePosition, paintPath, randomInt } from "./utils";
+import { CssClasses, Position, ScoreRecord } from './types';
+import { AStarFinder } from './aStarFinder';
+import {
+	boardToTileNodeArray,
+	clearPaths,
+	getTileFromEventTarget,
+	getTilePosition,
+	paintPath,
+	randomInt,
+} from './utils';
 
 const aStarFinder = new AStarFinder();
 const localStorageKey = 'kulki_scores';
 
 // html elements:
 const boardHTMLElement: Element = document.querySelector('#board') as Element;
-const boardSizeInput: HTMLInputElement = document.querySelector('#boardSizeInput') as HTMLInputElement;
+const boardSizeInput: HTMLInputElement = document.querySelector(
+	'#boardSizeInput'
+) as HTMLInputElement;
 const restartGameButton: Element = document.querySelector('#restartGameButton') as Element;
 const paintPathInput: HTMLInputElement = document.querySelector('#paintPath') as HTMLInputElement;
-const numberOfColorsInput: HTMLInputElement = document.querySelector('#numberOfColorsInput') as HTMLInputElement;
+const numberOfColorsInput: HTMLInputElement = document.querySelector(
+	'#numberOfColorsInput'
+) as HTMLInputElement;
 const currentScoreOutput: Element = document.querySelector('#currentScoreOutput') as Element;
 const nextBallColorHTMLElements: NodeListOf<Element> = document.querySelectorAll('.nextBallColor');
 let tileNodes: any[][]; // two-dimensional array of tiles
@@ -23,7 +34,7 @@ let board: any[][] = []; // two-dimensional array of colors
 let nextBallColors: any[] = [];
 let selectedTile: any; // tile with selected ball (first click to select, second click to move)
 let numberOfColors: number;
-let hoveredTile = { x: 0, y: 0, isPath: false } // only for moving active ball
+let hoveredTile = { x: 0, y: 0, isPath: false }; // only for moving active ball
 
 restartGameButton.addEventListener('click', () => {
 	restartGame();
@@ -39,7 +50,7 @@ export function restartGame(): void {
 	drawBoard();
 	displayBestScore();
 	// add 3 balls to the board:
-	for (let i = 0; i < 3;) {
+	for (let i = 0; i < 3; ) {
 		let x = randomInt(0, boardSize - 1);
 		let y = randomInt(0, boardSize - 1);
 		if (addNewBall(x, y)) {
@@ -48,14 +59,13 @@ export function restartGame(): void {
 	}
 }
 
-
 /**
  * @returns a boolean informing whether all 3 balls were added
  */
 function addNext3Balls(): boolean {
 	const newlyAdded = [];
 
-	for (let i = 0; i < 3;) {
+	for (let i = 0; i < 3; ) {
 		if (isBoardFull()) {
 			return false; // board is full, game over
 		}
@@ -92,7 +102,7 @@ function addNewBall(x: number, y: number): boolean {
 	ballElement.classList.add(CssClasses.ball);
 	ballElement.classList.add('color' + ballColor);
 	const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
-	const isTileBusy = tile.childNodes.length > 0
+	const isTileBusy = tile.childNodes.length > 0;
 	if (isTileBusy) {
 		return false;
 	}
@@ -101,17 +111,18 @@ function addNewBall(x: number, y: number): boolean {
 	return true;
 }
 
-function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSize: number) { // todo: fix, not always working
+function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSize: number) {
+	// todo: fix, not always working
 	// todo: fix vertical, horizontal
 	const minLineLength = 5;
 
 	function checkInDirection(dirX: number, dirY: number) {
-
 		let line = [movedPos];
 		let iDir = 1; // go in specified by dirX and dirY or direction (1) or go backwards (-1)
 		let i = 1;
 
-		for (; true; i += iDir) { // keep checking for the same color in that direction
+		for (; true; i += iDir) {
+			// keep checking for the same color in that direction
 			let x = i * dirX + movedPos.x; // posX
 			let y = i * dirY + movedPos.y; // posY
 			// 1. if position is not inside the board:
@@ -132,7 +143,8 @@ function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSiz
 			// 2. if next color is the same, add it to the line
 			if (board[x][y] == movedColor) {
 				line.push({ x, y });
-			} else { // no more balls of the same color in this direction, change direction
+			} else {
+				// no more balls of the same color in this direction, change direction
 				if (iDir == 1) {
 					i = 0; // will be -1 after an iteration
 					iDir = -1;
@@ -152,7 +164,7 @@ function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSiz
 	let diagonal2 = checkInDirection(1, 1);
 	let horizontal = checkInDirection(1, 0);
 
-	let ballsToRemove = [...diagonal1, ...diagonal2, ...vertical, ...horizontal]
+	let ballsToRemove = [...diagonal1, ...diagonal2, ...vertical, ...horizontal];
 
 	if (ballsToRemove.length > 0) {
 		let removedCount = 0;
@@ -188,7 +200,9 @@ function drawBoard() {
 		for (let j = 0; j < boardSize; j++) {
 			const tile = document.createElement('div');
 			tile.classList.add('board__row__tile');
-			(j % 2 == 0) ? tile.classList.add('board__row__tile__even') : tile.classList.add('board__row__tile__odd');
+			j % 2 == 0
+				? tile.classList.add('board__row__tile__even')
+				: tile.classList.add('board__row__tile__odd');
 			tile.addEventListener('click', onTileClick);
 			tile.addEventListener('mouseover', onTileHover);
 			row.appendChild(tile);
@@ -214,46 +228,43 @@ function gameOver(): void {
 }
 
 function saveScore(score: number): void {
-    try {
-        const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
+	try {
+		const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
 
-        if (!Array.isArray(scores)) {
-            throw new Error('Invalid scores data in localStorage');
-        }
+		if (!Array.isArray(scores)) {
+			throw new Error('Invalid scores data in localStorage');
+		}
 
-        const recordIndex = scores.findIndex(
-            (scoreRecord) =>
-                scoreRecord.boardSize === boardSize &&
-                scoreRecord.numberOfColors === numberOfColors
-        );
+		const recordIndex = scores.findIndex(
+			(scoreRecord) =>
+				scoreRecord.boardSize === boardSize && scoreRecord.numberOfColors === numberOfColors
+		);
 
-        const newRecord: ScoreRecord = {
-            dateAchieved: new Date().toISOString(),
-            score,
-            boardSize,
-            numberOfColors,
-        };
+		const newRecord: ScoreRecord = {
+			dateAchieved: new Date().toISOString(),
+			score,
+			boardSize,
+			numberOfColors,
+		};
 
-        if (recordIndex === -1) {
-            scores.push(newRecord);
-        } else {
-            // Optionally keep the highest score
-            scores[recordIndex] = scores[recordIndex].score > score
-                ? scores[recordIndex]
-                : newRecord;
-        }
+		if (recordIndex === -1) {
+			scores.push(newRecord);
+		} else {
+			// Optionally keep the highest score
+			scores[recordIndex] = scores[recordIndex].score > score ? scores[recordIndex] : newRecord;
+		}
 
-        localStorage.setItem(localStorageKey, JSON.stringify(scores));
-    } catch (error) {
-        console.error('Failed to save score:', error);
-    }
+		localStorage.setItem(localStorageKey, JSON.stringify(scores));
+	} catch (error) {
+		console.error('Failed to save score:', error);
+	}
 }
 
 function isBoardFull(): boolean {
 	return board.every((row) => {
 		return row.every((tile) => {
-			return tile != null
-		})
+			return tile != null;
+		});
 	});
 }
 
@@ -266,7 +277,8 @@ function onTileClick(event: MouseEvent): void {
 
 	let clickedPos = getTilePosition(tile, boardHTMLElement, boardSize) as Position;
 
-	if (board[clickedPos.x][clickedPos.y]) {  // if there is ball on clicked tile: change selection
+	if (board[clickedPos.x][clickedPos.y]) {
+		// if there is ball on clicked tile: change selection
 		// remove selection from all balls:
 		document.querySelectorAll('.ball').forEach((el) => {
 			el.classList.remove('selected');
@@ -274,8 +286,10 @@ function onTileClick(event: MouseEvent): void {
 		// change selected tile, add css class
 		selectedTile = { x: clickedPos.x, y: clickedPos.y, htmlElement: tile };
 		selectedTile.htmlElement.children[0].classList.add('selected');
-	} else { // if there is no ball on clicked tile
-		if (selectedTile && hoveredTile.isPath) { // move, check if 5 in line
+	} else {
+		// if there is no ball on clicked tile
+		if (selectedTile && hoveredTile.isPath) {
+			// move, check if 5 in line
 			const clickedTileNode = tileNodes[clickedPos.x][clickedPos.y];
 			const selectedTileNode = tileNodes[selectedTile.x][selectedTile.y];
 			const selectedBallColor = board[selectedTile.x][selectedTile.y];
@@ -297,8 +311,9 @@ function onTileClick(event: MouseEvent): void {
 
 function onTileHover(event: MouseEvent): void {
 	// if there is a selected tile and target tile is empty:
-	const isTargetTileEmpty = (event.target as any).childNodes.length == 0 &&
-		!(event.target as any).classList.contains(CssClasses.ball)
+	const isTargetTileEmpty =
+		(event.target as any).childNodes.length == 0 &&
+		!(event.target as any).classList.contains(CssClasses.ball);
 	if (selectedTile && isTargetTileEmpty) {
 		const tile = getTileFromEventTarget(event.target as any);
 		drawPath(selectedTile, getTilePosition(tile, boardHTMLElement, boardSize) as Position);
@@ -309,7 +324,7 @@ function randomNext3Colors(): void {
 	nextBallColors = Array.from({ length: 3 }, () => randomInt(1, numberOfColors));
 
 	nextBallColorHTMLElements.forEach((element, index) => {
-		element.className = ''
+		element.className = '';
 		element.classList.add('color' + nextBallColors[index], 'nextBallColor');
 	});
 }
@@ -324,8 +339,7 @@ function getBestScore(): number {
 
 	const bestScore = scores.find(
 		(scoreRecord) =>
-			scoreRecord.boardSize === boardSize &&
-			scoreRecord.numberOfColors === numberOfColors
+			scoreRecord.boardSize === boardSize && scoreRecord.numberOfColors === numberOfColors
 	);
 
 	return bestScore?.score || 0;

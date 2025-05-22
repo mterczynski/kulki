@@ -1,47 +1,54 @@
 {
-  "name": "kulki",
-  "version": "1.0.0",
-  "description": "My version of a game called Kulki/Color lines. I've used my own implementation of A* pathfinding algorithm.",
-  "main": "index.js",
-  "scripts": {
-    "start": "vite",
-    "build": "tsc && vite build",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watchAll --passWithNoTests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mterczynski/kulki.git"
-  },
-  "keywords": [],
-  "author": "mterczynski",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mterczynski/kulki/issues"
-  },
-  "homepage": "https://github.com/mterczynski/kulki#readme",
-  "dependencies": {
-    "typescript": "^5.4.5"
-  },
-  "devDependencies": {
-    "@types/jest": "^29.0.0",
-    "jest": "^29.0.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "jsdom": "^24.0.0",
-    "ts-jest": "^29.0.0",
-    "typescript": "^5.0.0"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "testMatch": [
-      "**/*.test.ts"
-    ],
-    "testEnvironmentOptions": {
-      "customExportConditions": [
-        "node",
-        "node-addons"
-      ]
-    }
-  }
+	"name": "kulki",
+	"version": "1.0.0",
+	"description": "My version of a game called Kulki/Color lines. I've used my own implementation of A* pathfinding algorithm.",
+	"main": "index.js",
+	"scripts": {
+		"start": "vite",
+		"build": "tsc && vite build",
+		"test": "jest --passWithNoTests",
+		"test:watch": "jest --watchAll --passWithNoTests",
+		"format": "prettier --write ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mterczynski/kulki.git"
+	},
+	"keywords": [],
+	"author": "mterczynski",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/mterczynski/kulki/issues"
+	},
+	"homepage": "https://github.com/mterczynski/kulki#readme",
+	"dependencies": {
+		"typescript": "^5.4.5"
+	},
+	"devDependencies": {
+		"@types/jest": "^29.0.0",
+		"jest": "^29.0.0",
+		"jsdom": "^24.0.0",
+		"prettier": "^3.5.3",
+		"ts-jest": "^29.0.0",
+		"typescript": "^5.0.0"
+	},
+	"prettier": {
+		"semi": true,
+		"singleQuote": true,
+		"trailingComma": "es5",
+		"printWidth": 100
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "jsdom",
+		"testMatch": [
+			"**/*.test.ts"
+		],
+		"testEnvironmentOptions": {
+			"customExportConditions": [
+				"node",
+				"node-addons"
+			]
+		}
+	}
 }

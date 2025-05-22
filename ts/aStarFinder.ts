@@ -6,18 +6,26 @@ export class AStarFinder {
 		return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
 	}
 
-	private getTileScore(tile: { estimate: number, travelCost: number }) {
+	private getTileScore(tile: { estimate: number; travelCost: number }) {
 		return tile.estimate + tile.travelCost;
 	}
 
 	/** Returns an array of tiles sorted by their score */
-	private getFreeAdjacentTiles(currentPos: Position, board: any[][], currentTravelCost: number, boardSize: number, targetPos: Position) {
+	private getFreeAdjacentTiles(
+		currentPos: Position,
+		board: any[][],
+		currentTravelCost: number,
+		boardSize: number,
+		targetPos: Position
+	) {
 		const adjacentTiles = [];
 		for (let x = -1; x <= 1; x++) {
 			for (let y = -1; y <= 1; y++) {
-				if ((x != 0 || y != 0) && Math.abs(x % 2) != Math.abs(y % 2)) { // exclude current and diagonal tiles
+				if ((x != 0 || y != 0) && Math.abs(x % 2) != Math.abs(y % 2)) {
+					// exclude current and diagonal tiles
 					let tilePos = { x: currentPos.x + x, y: currentPos.y + y };
-					let posExists = tilePos.x >= 0 && tilePos.x < boardSize && tilePos.y >= 0 && tilePos.y < boardSize;
+					let posExists =
+						tilePos.x >= 0 && tilePos.x < boardSize && tilePos.y >= 0 && tilePos.y < boardSize;
 					if (posExists) {
 						let adjacentTileValue = board[tilePos.x][tilePos.y];
 						if (adjacentTileValue == null) {
@@ -25,7 +33,7 @@ export class AStarFinder {
 								x: tilePos.x,
 								y: tilePos.y,
 								estimate: this.getEstimate(tilePos, targetPos),
-								travelCost: currentTravelCost + 1
+								travelCost: currentTravelCost + 1,
 							});
 						}
 					}
@@ -38,17 +46,24 @@ export class AStarFinder {
 		return adjacentTiles;
 	}
 
-	private getAdjacentFromClosedList<T extends Position>(closedList: T[], currentPos: Position): T[] {
+	private getAdjacentFromClosedList<T extends Position>(
+		closedList: T[],
+		currentPos: Position
+	): T[] {
 		return closedList.filter((tile) => {
-			return Math.abs(tile.x - currentPos.x) == 1 && Math.abs(tile.y - currentPos.y) == 0 ||
-				Math.abs(tile.x - currentPos.x) == 0 && Math.abs(tile.y - currentPos.y) == 1;
+			return (
+				(Math.abs(tile.x - currentPos.x) == 1 && Math.abs(tile.y - currentPos.y) == 0) ||
+				(Math.abs(tile.x - currentPos.x) == 0 && Math.abs(tile.y - currentPos.y) == 1)
+			);
 		});
 	}
 
 	private addUniquePointToArray(point: Position, array: Position[]) {
-		if (array.filter((el) => {
-			return el.x == point.x && el.y == point.y;
-		}).length == 0) {
+		if (
+			array.filter((el) => {
+				return el.x == point.x && el.y == point.y;
+			}).length == 0
+		) {
 			array.push(point);
 			return true;
 		}
@@ -56,9 +71,11 @@ export class AStarFinder {
 	}
 
 	private checkIfPointInList(point: Position, list: Position[]) {
-		if (list.filter((el) => {
-			return el.x == point.x && point.y == el.y;
-		}).length > 0) {
+		if (
+			list.filter((el) => {
+				return el.x == point.x && point.y == el.y;
+			}).length > 0
+		) {
 			return true;
 		} else {
 			return false;
@@ -110,7 +127,13 @@ export class AStarFinder {
 				return { success: true, openList, closedList, finalPath };
 			}
 			// 5. get adjacent tiles
-			const adjacentTiles = this.getFreeAdjacentTiles(currentPos, array, currentPos.travelCost, arraySize, targetPos);
+			const adjacentTiles = this.getFreeAdjacentTiles(
+				currentPos,
+				array,
+				currentPos.travelCost,
+				arraySize,
+				targetPos
+			);
 			// 6. forEach adjTile do action depending on in which list is the tile
 			adjacentTiles.forEach((adjTile) => {
 				// 6.1. if tile is in the closed list, ignore it
