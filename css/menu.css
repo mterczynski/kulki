@@ -1,106 +1,106 @@
-.menu{
-    display: flex;
-    /* position: absolute; */
-    flex-direction: column;
-    left: 0;
-    width: 200px;
-    /* height: 100%; */
-    height: 100vh;
-    border-right: 2px solid black;
+.menu {
+	display: flex;
+	flex-direction: column;
+	left: 0;
+	width: 200px;
+	height: 100vh;
+	border-right: 2px solid black;
 }
-.menu >*{
-    border-top: 2px solid black;
-    height: 20%;
-    position: relative;
-    width: 100%;
+.menu > * {
+	border-top: 2px solid black;
+	height: 20%;
+	position: relative;
+	width: 100%;
 }
 
-.menu >:nth-child(1) {
-    background: #5BC0EB;
-    border-top: none;
+.menu > :nth-child(1) {
+	background: #5bc0eb;
+	border-top: none;
 }
-.menu >:nth-child(2) {
-    background: #FDE74C;
+.menu > :nth-child(2) {
+	background: #fde74c;
 }
-.menu >:nth-child(3) {
-    background: #9BC53D;
+.menu > :nth-child(3) {
+	background: #9bc53d;
 }
-.menu >:nth-child(4) {
+.menu > :nth-child(4) {
 	background: #34e5b3;
 }
-.menu >:nth-child(5) {
-    background: #E55934;
+.menu > :nth-child(5) {
+	background: #e55934;
 }
-.menu >:nth-child(6) {
-    background: #FA7921;
-}
-
-.menu .boardSize__input, .menu .numberOfColors__input, .menu .paintPath__input{
-    position: absolute;
-    display: block;
-    background: white;
-    width: 30%;
-    height: 30%;
-    left: 50%;
-    top: 50%;
-    font-size: 24px;
-    text-align: center;
-    transform: translate(-50%, -50%);
-    outline: none;
-    border: none;
+.menu > :nth-child(6) {
+	background: #fa7921;
 }
 
-.menu .header{
-    background: none;
-    font-size: 24px;
-    font-weight: normal;
-    text-align: center;
-    width: 100%;
+.menu .boardSize__input,
+.menu .numberOfColors__input,
+.menu .paintPath__input {
+	position: absolute;
+	display: block;
+	background: white;
+	width: 30%;
+	height: 30%;
+	left: 50%;
+	top: 50%;
+	font-size: 24px;
+	text-align: center;
+	transform: translate(-50%, -50%);
+	outline: none;
+	border: none;
 }
 
-.menu .restartGameButton{
-    background: white;
-    font-size: 24px;
-    height: 30%;
-    left: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 60%;
+.menu .header {
+	background: none;
+	font-size: 24px;
+	font-weight: normal;
+	text-align: center;
+	width: 100%;
+}
+
+.menu .restartGameButton {
+	background: white;
+	font-size: 24px;
+	height: 30%;
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 60%;
 }
 
 .menu .scoreOutput {
-    font-size: 24px;
-    text-align: center;
+	font-size: 24px;
+	text-align: center;
 }
 
-.menu .nextBallColor{
-    border-radius: 100px;
-    height: 0;
-    padding: 13%;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
+.menu .nextBallColor {
+	border-radius: 100px;
+	height: 0;
+	padding: 13%;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 0;
 }
 
-.menu .nextBallColor:nth-child(1){
-    left: 10px;
+.menu .nextBallColor:nth-child(1) {
+	left: 10px;
 }
-.menu .nextBallColor:nth-child(2){
-    left: 50%;
-    transform: translate(-50%, -50%);
+.menu .nextBallColor:nth-child(2) {
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
-.menu .nextBallColor:nth-child(3){
-    right: 10px;
+.menu .nextBallColor:nth-child(3) {
+	right: 10px;
 }
 
-.menu .nextBallColors{
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    height: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
+.menu .nextBallColors {
+	background: rgba(0, 0, 0, 0.75);
+	display: flex;
+	height: 50%;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 100%;
 }
