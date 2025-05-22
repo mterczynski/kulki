@@ -23,3 +23,10 @@ npm run start:open
 ```bash
 npm run build
 ```
+
+## Testing
+```bash
+npm test
+# or
+npm run test:watch
+```

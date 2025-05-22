@@ -4,9 +4,10 @@
   "description": "My version of a game called Kulki/Color lines. I've used my own implementation of A* pathfinding algorithm.",
   "main": "index.js",
   "scripts": {
-		"start": "vite",
+    "start": "vite",
     "build": "tsc && vite build",
-    "test": "echo \"no tests declared yet\""
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watchAll --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,24 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "ts-loader": "^9.5.1",
-    "vite": "^5.2.10"
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^24.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/*.test.ts"
+    ],
+    "testEnvironmentOptions": {
+      "customExportConditions": [
+        "node",
+        "node-addons"
+      ]
+    }
   }
 }
