@@ -1,14 +1,14 @@
 import { CssClasses } from "./types";
 
 enum PathClass {
-	openList = 'openList',
-	closedList = 'closedList',
-	finalPath = 'finalPath',
+	openList = "openList",
+	closedList = "closedList",
+	finalPath = "finalPath",
 }
 
 export function boardToTileNodeArray(htmlBoard: Element, boardSize: number): Element[][] {
 	const tileNodes: Element[][] = [];
-	const boardTiles = htmlBoard.querySelectorAll(':scope >*>*');
+	const boardTiles = htmlBoard.querySelectorAll(":scope >*>*");
 
 	for (let i = 0; i < boardSize; i++) {
 		tileNodes.push([]);
@@ -22,7 +22,7 @@ export function boardToTileNodeArray(htmlBoard: Element, boardSize: number): Ele
 }
 
 export function getTilePosition(tile: any, boardHTMLElement: Element, boardSize: number) {
-	const boardRows = boardHTMLElement.querySelectorAll(':scope >*');
+	const boardRows = boardHTMLElement.querySelectorAll(":scope >*");
 
 	let x: number | undefined;
 	let y: number | undefined;
@@ -43,8 +43,8 @@ export function getTilePosition(tile: any, boardHTMLElement: Element, boardSize:
 }
 
 export function clearPaths(tileNodes: Element[][]): void {
-	tileNodes.forEach(row => {
-		row.forEach(tile => {
+	tileNodes.forEach((row) => {
+		row.forEach((tile) => {
 			tile.classList.remove(PathClass.openList);
 			tile.classList.remove(PathClass.closedList);
 			tile.classList.remove(PathClass.finalPath);
@@ -64,18 +64,20 @@ export function randomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-export function paintPath(path: { openList: any[], closedList: any[], finalPath: any[] }, tileNodes: any[]): void {
+export function paintPath(path: { openList: any[]; closedList: any[]; finalPath: any[] }, tileNodes: any[], debugMode = false): void {
 	clearPaths(tileNodes);
 
 	// uncomment these 2 blocks if you want to visualize the A* algorithm
 
-	// path.openList.forEach((tile) => {
-	// 	tileNodes[tile.x][tile.y].classList.add(PathClass.openList);
-	// });
+	if (debugMode) {
+		path.openList.forEach((tile) => {
+			tileNodes[tile.x][tile.y].classList.add(PathClass.openList);
+		});
 
-	// path.closedList.forEach((tile) => {
-	// 	tileNodes[tile.x][tile.y].classList.add(PathClass.closedList);
-	// });
+		path.closedList.forEach((tile) => {
+			tileNodes[tile.x][tile.y].classList.add(PathClass.closedList);
+		});
+	}
 
 	if (path.finalPath) {
 		path.finalPath.forEach((tile) => {
