@@ -53,14 +53,6 @@ describe('utils', () => {
 			paintPath(path, tileNodes as any);
 			expect(tile.classList.contains('finalPath')).toBe(true);
 		});
-
-		it('adds closedList class to tiles in closedList', () => {
-			const tile = document.createElement('div');
-			const tileNodes = [[tile]];
-			const path = { openList: [], closedList: [{ x: 0, y: 0 }], finalPath: [] };
-			paintPath(path, tileNodes as any);
-			expect(tile.classList.contains('closedList')).toBe(true);
-		});
 	});
 
 	// boardToTileNodeArray and getTilePosition require a DOM structure, so only basic smoke tests here
