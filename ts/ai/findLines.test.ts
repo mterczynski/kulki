@@ -10,7 +10,12 @@ describe('findLines', () => {
         ];
         // Color 1
         const lines = findLines(board, 1);
-        // Should find at least the main diagonal and horizontal/vertical lines
+        // All cells in each line should be color 1
+        lines.forEach(line => {
+            line.cells.forEach(([x, y]) => {
+                expect(board[x][y]).toBe(1);
+            });
+        });
         expect(lines.some(l => l.length === 4 && l.cells[0][0] === 0 && l.cells[0][1] === 0)).toBeTruthy();
         expect(lines.some(l => l.length === 3)).toBeTruthy();
     });
@@ -30,6 +35,12 @@ describe('findLines', () => {
             [0, 0, 0],
         ];
         const lines = findLines(board, 2);
+        // All cells in each line should be color 2
+        lines.forEach(line => {
+            line.cells.forEach(([x, y]) => {
+                expect(board[x][y]).toBe(2);
+            });
+        });
         // Only one horizontal line
         expect(lines.filter(l => l.length === 3).length).toBe(1);
     });

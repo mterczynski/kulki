@@ -30,12 +30,23 @@ export function findLines(board: BoardState, color: Color): { length: number, ce
                         x += dx;
                         y += dy;
                     }
-                    if (line.length > 1) {
-                        lines.push({ length: line.length, cells: line });
-                    }
+                    // if (line.length > 1) {
+                    lines.push({ length: line.length, cells: line });
+                    // }
                 }
             }
         }
     }
-    return lines.sort((a, b) => b.length - a.length);
+    let result = lines.sort((a, b) => b.length - a.length);
+    // Remove duplicate single-cell lines
+    const seenSingles = new Set<string>();
+    result = result.filter(line => {
+        if (line.length === 1) {
+            const key = line.cells[0].join(',');
+            if (seenSingles.has(key)) return false;
+            seenSingles.add(key);
+        }
+        return true;
+    });
+    return result;
 }
