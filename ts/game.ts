@@ -247,19 +247,8 @@ export class Game {
 			this.selectedTile.htmlElement.children[0].classList.add('selected');
 		} else {
 			if (this.selectedTile && this.hoveredTile.isPath) {
-				const clickedTileNode = this.tileNodes[clickedPos.x][clickedPos.y];
-				const selectedTileNode = this.tileNodes[this.selectedTile.x][this.selectedTile.y];
-				const selectedBallColor = this.board[this.selectedTile.x][this.selectedTile.y];
-				clickedTileNode.appendChild(selectedTileNode.children[0]);
-				clickedTileNode.children[0].classList.remove('selected');
-				this.board[clickedPos.x][clickedPos.y] = selectedBallColor;
-				this.board[this.selectedTile.x][this.selectedTile.y] = null;
-				this.selectedTile = null;
-				clearPaths(this.tileNodes);
-				if (!this.checkFor5(clickedPos, this.board, selectedBallColor, this.boardSize) && !this.addNext3Balls()) {
-					this.gameOver();
-				}
-				this.randomNext3Colors();
+				// Use the move method for actual move logic
+				this.move([this.selectedTile.x, this.selectedTile.y], [clickedPos.x, clickedPos.y]);
 			}
 		}
 	}
@@ -299,5 +288,55 @@ export class Game {
 	private displayBestScore(): void {
 		const bestScoreElement = document.querySelector('#bestScoreOutput') as HTMLSpanElement;
 		bestScoreElement.innerHTML = this.getBestScore() + '';
+	}
+
+	public getAllPossibleMoves(): { from: [number, number], to: [number, number] }[] {
+		const moves: { from: [number, number], to: [number, number] }[] = [];
+		for (let i = 0; i < this.boardSize; i++) {
+			for (let j = 0; j < this.boardSize; j++) {
+				if (this.board[i][j] > 0) {
+					for (let x = 0; x < this.boardSize; x++) {
+						for (let y = 0; y < this.boardSize; y++) {
+							if (this.board[x][y] === null) {
+								const path = this.aStarFinder.findPath(this.board, { x: i, y: j }, { x, y }, this.boardSize);
+								if (path.success) {
+									moves.push({ from: [i, j], to: [x, y] });
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return moves;
+	}
+
+	public move(from: [number, number], to: [number, number]): boolean {
+		if (this.isGameOver) return false;
+		const fromPos = { x: from[0], y: from[1] };
+		const toPos = { x: to[0], y: to[1] };
+		if (!this.board[fromPos.x][fromPos.y] || this.board[toPos.x][toPos.y]) return false;
+		// Simulate selection
+		this.selectedTile = { x: fromPos.x, y: fromPos.y, htmlElement: this.tileNodes[fromPos.x][fromPos.y] };
+		// Check if path exists
+		const path = this.aStarFinder.findPath(this.board, fromPos, toPos, this.boardSize);
+		if (!path.success) return false;
+		// Move logic (similar to onTileClick)
+		const fromTileNode = this.tileNodes[fromPos.x][fromPos.y];
+		const toTileNode = this.tileNodes[toPos.x][toPos.y];
+		const selectedBallColor = this.board[fromPos.x][fromPos.y];
+		if (fromTileNode.children.length > 0) {
+			toTileNode.appendChild(fromTileNode.children[0]);
+			this.board[toPos.x][toPos.y] = selectedBallColor;
+			this.board[fromPos.x][fromPos.y] = null;
+			this.selectedTile = null;
+			clearPaths(this.tileNodes);
+			if (!this.checkFor5(toPos, this.board, selectedBallColor, this.boardSize) && !this.addNext3Balls()) {
+				this.gameOver();
+			}
+			this.randomNext3Colors();
+			return true;
+		}
+		return false;
 	}
 }

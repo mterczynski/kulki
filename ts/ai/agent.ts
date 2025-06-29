@@ -18,30 +18,9 @@ class KulkiAIAgent {
     }
 
     // Decide on a move based on board state and next colors
-    public decideMove(board: BoardState, nextColors: Color[]): Move | null {
-        const moves = this.getAllPossibleMoves(board);
-        if (moves.length === 0) return null;
-        return moves[Math.floor(Math.random() * moves.length)];
-    }
-
-    // Dummy: returns all possible moves (replace with real logic)
-    private getAllPossibleMoves(board: BoardState): Move[] {
-        const moves: Move[] = [];
-        for (let i = 0; i < board.length; i++) {
-            for (let j = 0; j < board[i].length; j++) {
-                if (board[i][j] > 0) {
-                    // Try moving to any empty cell
-                    for (let x = 0; x < board.length; x++) {
-                        for (let y = 0; y < board[x].length; y++) {
-                            if (board[x][y] === 0) {
-                                moves.push({ from: [i, j], to: [x, y] });
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return moves;
+    public decideMove(board: BoardState, nextColors: Color[], allpossiblemoves: Move[]): Move | null {
+        if (allpossiblemoves.length === 0) return null;
+        return allpossiblemoves[Math.floor(Math.random() * allpossiblemoves.length)];
     }
 
     // Model persistence
