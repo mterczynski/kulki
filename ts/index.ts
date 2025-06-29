@@ -1,5 +1,7 @@
-import './utils';
-import './aStarFinder.ts';
-import { restartGame } from './game';
+import { AiAgentMoveHandler } from './ai-agent-move-handler';
+import { Game } from './game';
+const game = new Game();
+const aiHandler = new AiAgentMoveHandler(game);
 
-restartGame();
+
+game.restartGame();

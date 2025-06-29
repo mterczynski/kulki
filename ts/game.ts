@@ -8,9 +8,8 @@ import {
 	paintPath,
 	randomInt,
 } from './utils';
-import './ai-agent-move-handler';
 
-class Game {
+export class Game {
 	private aStarFinder = new AStarFinder();
 	private localStorageKey = 'kulki_scores';
 	private boardHTMLElement: Element = document.querySelector('#board') as Element;
@@ -40,31 +39,6 @@ class Game {
 		this.restartGameButton.addEventListener('click', () => {
 			this.restartGame();
 		});
-		this.initWindowIntegration();
-	}
-
-	private initWindowIntegration() {
-		(window as any).getBoardState = () => this.board.map(row => row.slice());
-		(window as any).getNextColors = () => this.nextBallColors.slice();
-		(window as any).doMove = (from: {0:number,1:number}, to: {0:number,1:number}) => {
-			const fromPos = { x: from[0], y: from[1] };
-			const toPos = { x: to[0], y: to[1] };
-			this.selectedTile = { x: fromPos.x, y: fromPos.y, htmlElement: this.tileNodes[fromPos.x][fromPos.y] };
-			const selectedBallColor = this.board[fromPos.x][fromPos.y];
-			const fromTileNode = this.tileNodes[fromPos.x][fromPos.y];
-			const toTileNode = this.tileNodes[toPos.x][toPos.y];
-			if (fromTileNode.children.length > 0) {
-				toTileNode.appendChild(fromTileNode.children[0]);
-				this.board[toPos.x][toPos.y] = selectedBallColor;
-				this.board[fromPos.x][fromPos.y] = null;
-				this.selectedTile = null;
-				clearPaths(this.tileNodes);
-				if (!this.checkFor5(toPos, this.board, selectedBallColor, this.boardSize) && !this.addNext3Balls()) {
-					this.gameOver();
-				}
-				this.randomNext3Colors();
-			}
-		};
 	}
 
 	restartGame(): void {
@@ -327,6 +301,3 @@ class Game {
 		bestScoreElement.innerHTML = this.getBestScore() + '';
 	}
 }
-
-// Initialize the game
-const game = new Game();
