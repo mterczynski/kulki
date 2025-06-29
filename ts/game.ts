@@ -8,344 +8,325 @@ import {
 	paintPath,
 	randomInt,
 } from './utils';
+import './ai-agent-move-handler';
 
-const aStarFinder = new AStarFinder();
-const localStorageKey = 'kulki_scores';
+class Game {
+	private aStarFinder = new AStarFinder();
+	private localStorageKey = 'kulki_scores';
+	private boardHTMLElement: Element = document.querySelector('#board') as Element;
+	private boardSizeInput: HTMLInputElement = document.querySelector(
+		'#boardSizeInput'
+	) as HTMLInputElement;
+	private restartGameButton: Element = document.querySelector(
+		'#restartGameButton'
+	) as Element;
+	private paintPathInput: HTMLInputElement = document.querySelector('#paintPath') as HTMLInputElement;
+	private numberOfColorsInput: HTMLInputElement = document.querySelector(
+		'#numberOfColorsInput'
+	) as HTMLInputElement;
+	private currentScoreOutput: Element = document.querySelector('#currentScoreOutput') as Element;
+	private nextBallColorHTMLElements: NodeListOf<Element> = document.querySelectorAll('.nextBallColor');
+	private tileNodes: any[][] = [];
+	private boardSize: number = 0;
+	private currentScore = 0;
+	private isGameOver = false;
+	private board: any[][] = [];
+	private nextBallColors: any[] = [];
+	private selectedTile: any = null;
+	private numberOfColors: number = 0;
+	private hoveredTile = { x: 0, y: 0, isPath: false };
 
-// html elements:
-const boardHTMLElement: Element = document.querySelector('#board') as Element;
-const boardSizeInput: HTMLInputElement = document.querySelector(
-	'#boardSizeInput'
-) as HTMLInputElement;
-const restartGameButton: Element = document.querySelector('#restartGameButton') as Element;
-const paintPathInput: HTMLInputElement = document.querySelector('#paintPath') as HTMLInputElement;
-const numberOfColorsInput: HTMLInputElement = document.querySelector(
-	'#numberOfColorsInput'
-) as HTMLInputElement;
-const currentScoreOutput: Element = document.querySelector('#currentScoreOutput') as Element;
-const nextBallColorHTMLElements: NodeListOf<Element> = document.querySelectorAll('.nextBallColor');
-let tileNodes: any[][]; // two-dimensional array of tiles
-
-// game variables:
-let boardSize: number;
-let currentScore = 0;
-let isGameOver = false;
-let board: any[][] = []; // two-dimensional array of colors
-let nextBallColors: any[] = [];
-let selectedTile: any; // tile with selected ball (first click to select, second click to move)
-let numberOfColors: number;
-let hoveredTile = { x: 0, y: 0, isPath: false }; // only for moving active ball
-
-restartGameButton.addEventListener('click', () => {
-	restartGame();
-});
-
-export function restartGame(): void {
-	isGameOver = false;
-	boardSize = boardSizeInput.valueAsNumber;
-	numberOfColors = numberOfColorsInput.valueAsNumber;
-	currentScore = 0;
-	currentScoreOutput.innerHTML = '0';
-	randomNext3Colors();
-	drawBoard();
-	displayBestScore();
-	// add 3 balls to the board:
-	for (let i = 0; i < 3; ) {
-		let x = randomInt(0, boardSize - 1);
-		let y = randomInt(0, boardSize - 1);
-		if (addNewBall(x, y)) {
-			i++;
-		}
-	}
-}
-
-/**
- * @returns a boolean informing whether all 3 balls were added
- */
-function addNext3Balls(): boolean {
-	const newlyAdded = [];
-
-	for (let i = 0; i < 3; ) {
-		if (isBoardFull()) {
-			return false; // board is full, game over
-		}
-
-		// try to find a next free tile in the board
-		const posX = randomInt(0, boardSize - 1);
-		const posY = randomInt(0, boardSize - 1);
-
-		if (board[posX][posY] == null) {
-			const color = nextBallColors[i];
-			const ballNode = document.createElement('div');
-			ballNode.classList.add(CssClasses.ball, 'color' + nextBallColors[i]);
-			tileNodes[posX][posY].appendChild(ballNode);
-			board[posX][posY] = color;
-			newlyAdded.push({ posX, posY, color });
-			i++;
-		}
-	}
-
-	// for every nextBall: check for 5+ in a row after adding it
-	newlyAdded.forEach((ball) => {
-		checkFor5({ x: ball.posX, y: ball.posY }, board, ball.color, boardSize);
-	});
-
-	return !isBoardFull();
-}
-
-/**
- * @returns a boolean that says whether adding the ball was successful
- */
-function addNewBall(x: number, y: number): boolean {
-	const ballElement = document.createElement('div');
-	const ballColor = randomInt(1, numberOfColors);
-	ballElement.classList.add(CssClasses.ball);
-	ballElement.classList.add('color' + ballColor);
-	const tile = boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
-	const isTileBusy = tile.childNodes.length > 0;
-	if (isTileBusy) {
-		return false;
-	}
-	tile.appendChild(ballElement);
-	board[x][y] = ballColor;
-	return true;
-}
-
-function checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSize: number) {
-	// todo: fix, not always working
-	// todo: fix vertical, horizontal
-	const minLineLength = 5;
-
-	function checkInDirection(dirX: number, dirY: number) {
-		let line = [movedPos];
-		let iDir = 1; // go in specified by dirX and dirY or direction (1) or go backwards (-1)
-		let i = 1;
-
-		for (; true; i += iDir) {
-			// keep checking for the same color in that direction
-			let x = i * dirX + movedPos.x; // posX
-			let y = i * dirY + movedPos.y; // posY
-			// 1. if position is not inside the board:
-			if ((x >= 0 && y >= 0 && x < boardSize && y < boardSize) == false) {
-				if (iDir == 1) {
-					i = 0; // will be -1 after iteration
-					iDir = -1;
-					continue;
-				} else {
-					if (line.length >= minLineLength) {
-						return line;
-					} else {
-						return [];
-					}
-				}
-			}
-
-			// 2. if next color is the same, add it to the line
-			if (board[x][y] == movedColor) {
-				line.push({ x, y });
-			} else {
-				// no more balls of the same color in this direction, change direction
-				if (iDir == 1) {
-					i = 0; // will be -1 after an iteration
-					iDir = -1;
-				} else {
-					if (line.length >= minLineLength) {
-						return line;
-					} else {
-						return [];
-					}
-				}
-			}
-		}
-	}
-
-	let diagonal1 = checkInDirection(-1, 1);
-	let vertical = checkInDirection(0, 1);
-	let diagonal2 = checkInDirection(1, 1);
-	let horizontal = checkInDirection(1, 0);
-
-	let ballsToRemove = [...diagonal1, ...diagonal2, ...vertical, ...horizontal];
-
-	if (ballsToRemove.length > 0) {
-		let removedCount = 0;
-		ballsToRemove.forEach((ball) => {
-			if (board[ball.x][ball.y] == null) {
-				return; // skip, it's a duplicate
-			}
-			board[ball.x][ball.y] = null;
-			tileNodes[ball.x][ball.y].innerHTML = '';
-			removedCount++;
+	constructor() {
+		this.restartGameButton.addEventListener('click', () => {
+			this.restartGame();
 		});
-		setGameScore(currentScore + removedCount * removedCount);
-		return true; // next turn
-	} else {
-		return false; // no next turn
-	}
-}
-
-function drawBoard() {
-	// Clear board:
-	while (boardHTMLElement.firstChild) {
-		boardHTMLElement.removeChild(boardHTMLElement.firstChild);
-	}
-	board = [];
-	for (let i = 0; i < boardSize; i++) {
-		board.push(Array(boardSize).fill(null));
+		this.initWindowIntegration();
 	}
 
-	// Draw new rows and tiles:
-	for (let i = 0; i < boardSize; i++) {
-		const row = document.createElement('div');
-		row.classList.add('board__row');
-		for (let j = 0; j < boardSize; j++) {
-			const tile = document.createElement('div');
-			tile.classList.add('board__row__tile');
-			j % 2 == 0
-				? tile.classList.add('board__row__tile__even')
-				: tile.classList.add('board__row__tile__odd');
-			tile.addEventListener('click', onTileClick);
-			tile.addEventListener('mouseover', onTileHover);
-			row.appendChild(tile);
-		}
-		boardHTMLElement.appendChild(row);
-	}
-	tileNodes = boardToTileNodeArray(boardHTMLElement, boardSize);
-}
-
-function drawPath(from: Position, to: Position) {
-	let path = aStarFinder.findPath(board, from, to, boardSize);
-	if (paintPathInput.checked) {
-		paintPath(path as any, tileNodes);
-	}
-
-	hoveredTile = { x: to.x, y: to.y, isPath: path.success };
-}
-
-function gameOver(): void {
-	saveScore(currentScore);
-	displayBestScore();
-	alert('Game over. Your score: ' + currentScore);
-}
-
-function saveScore(score: number): void {
-	try {
-		const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
-
-		if (!Array.isArray(scores)) {
-			throw new Error('Invalid scores data in localStorage');
-		}
-
-		const recordIndex = scores.findIndex(
-			(scoreRecord) =>
-				scoreRecord.boardSize === boardSize && scoreRecord.numberOfColors === numberOfColors
-		);
-
-		const newRecord: ScoreRecord = {
-			dateAchieved: new Date().toISOString(),
-			score,
-			boardSize,
-			numberOfColors,
+	private initWindowIntegration() {
+		(window as any).getBoardState = () => this.board.map(row => row.slice());
+		(window as any).getNextColors = () => this.nextBallColors.slice();
+		(window as any).doMove = (from: {0:number,1:number}, to: {0:number,1:number}) => {
+			const fromPos = { x: from[0], y: from[1] };
+			const toPos = { x: to[0], y: to[1] };
+			this.selectedTile = { x: fromPos.x, y: fromPos.y, htmlElement: this.tileNodes[fromPos.x][fromPos.y] };
+			const selectedBallColor = this.board[fromPos.x][fromPos.y];
+			const fromTileNode = this.tileNodes[fromPos.x][fromPos.y];
+			const toTileNode = this.tileNodes[toPos.x][toPos.y];
+			if (fromTileNode.children.length > 0) {
+				toTileNode.appendChild(fromTileNode.children[0]);
+				this.board[toPos.x][toPos.y] = selectedBallColor;
+				this.board[fromPos.x][fromPos.y] = null;
+				this.selectedTile = null;
+				clearPaths(this.tileNodes);
+				if (!this.checkFor5(toPos, this.board, selectedBallColor, this.boardSize) && !this.addNext3Balls()) {
+					this.gameOver();
+				}
+				this.randomNext3Colors();
+			}
 		};
-
-		if (recordIndex === -1) {
-			scores.push(newRecord);
-		} else {
-			// Optionally keep the highest score
-			scores[recordIndex] = scores[recordIndex].score > score ? scores[recordIndex] : newRecord;
-		}
-
-		localStorage.setItem(localStorageKey, JSON.stringify(scores));
-	} catch (error) {
-		console.error('Failed to save score:', error);
-	}
-}
-
-function isBoardFull(): boolean {
-	return board.every((row) => {
-		return row.every((tile) => {
-			return tile != null;
-		});
-	});
-}
-
-function onTileClick(event: MouseEvent): void {
-	if (isGameOver) {
-		return;
 	}
 
-	const tile = getTileFromEventTarget(event.target as HTMLElement);
-
-	let clickedPos = getTilePosition(tile, boardHTMLElement, boardSize) as Position;
-
-	if (board[clickedPos.x][clickedPos.y]) {
-		// if there is ball on clicked tile: change selection
-		// remove selection from all balls:
-		document.querySelectorAll('.ball').forEach((el) => {
-			el.classList.remove('selected');
-		});
-		// change selected tile, add css class
-		selectedTile = { x: clickedPos.x, y: clickedPos.y, htmlElement: tile };
-		selectedTile.htmlElement.children[0].classList.add('selected');
-	} else {
-		// if there is no ball on clicked tile
-		if (selectedTile && hoveredTile.isPath) {
-			// move, check if 5 in line
-			const clickedTileNode = tileNodes[clickedPos.x][clickedPos.y];
-			const selectedTileNode = tileNodes[selectedTile.x][selectedTile.y];
-			const selectedBallColor = board[selectedTile.x][selectedTile.y];
-
-			clickedTileNode.appendChild(selectedTileNode.children[0]);
-			clickedTileNode.children[0].classList.remove('selected');
-			board[clickedPos.x][clickedPos.y] = selectedBallColor;
-			board[selectedTile.x][selectedTile.y] = null;
-			selectedTile = null;
-
-			clearPaths(tileNodes);
-			if (!checkFor5(clickedPos, board, selectedBallColor, boardSize) && !addNext3Balls()) {
-				gameOver();
+	restartGame(): void {
+		this.isGameOver = false;
+		this.boardSize = this.boardSizeInput.valueAsNumber;
+		this.numberOfColors = this.numberOfColorsInput.valueAsNumber;
+		this.currentScore = 0;
+		this.currentScoreOutput.innerHTML = '0';
+		this.randomNext3Colors();
+		this.drawBoard();
+		this.displayBestScore();
+		for (let i = 0; i < 3;) {
+			let x = randomInt(0, this.boardSize - 1);
+			let y = randomInt(0, this.boardSize - 1);
+			if (this.addNewBall(x, y)) {
+				i++;
 			}
-			randomNext3Colors();
 		}
 	}
-}
 
-function onTileHover(event: MouseEvent): void {
-	// if there is a selected tile and target tile is empty:
-	const isTargetTileEmpty =
-		(event.target as any).childNodes.length == 0 &&
-		!(event.target as any).classList.contains(CssClasses.ball);
-	if (selectedTile && isTargetTileEmpty) {
-		const tile = getTileFromEventTarget(event.target as any);
-		drawPath(selectedTile, getTilePosition(tile, boardHTMLElement, boardSize) as Position);
+	private addNext3Balls(): boolean {
+		const newlyAdded = [];
+		for (let i = 0; i < 3;) {
+			if (this.isBoardFull()) {
+				return false;
+			}
+			const posX = randomInt(0, this.boardSize - 1);
+			const posY = randomInt(0, this.boardSize - 1);
+			if (this.board[posX][posY] == null) {
+				const color = this.nextBallColors[i];
+				const ballNode = document.createElement('div');
+				ballNode.classList.add(CssClasses.ball, 'color' + this.nextBallColors[i]);
+				this.tileNodes[posX][posY].appendChild(ballNode);
+				this.board[posX][posY] = color;
+				newlyAdded.push({ posX, posY, color });
+				i++;
+			}
+		}
+		newlyAdded.forEach((ball) => {
+			this.checkFor5({ x: ball.posX, y: ball.posY }, this.board, ball.color, this.boardSize);
+		});
+		return !this.isBoardFull();
+	}
+
+	private addNewBall(x: number, y: number): boolean {
+		const ballElement = document.createElement('div');
+		const ballColor = randomInt(1, this.numberOfColors);
+		ballElement.classList.add(CssClasses.ball);
+		ballElement.classList.add('color' + ballColor);
+		const tile = this.boardHTMLElement.querySelectorAll(':scope >*')[y].childNodes[x];
+		const isTileBusy = tile.childNodes.length > 0;
+		if (isTileBusy) {
+			return false;
+		}
+		tile.appendChild(ballElement);
+		this.board[x][y] = ballColor;
+		return true;
+	}
+
+	private checkFor5(movedPos: Position, board: any[][], movedColor: any, boardSize: number) {
+		const minLineLength = 5;
+		function checkInDirection(dirX: number, dirY: number) {
+			let line = [movedPos];
+			let iDir = 1;
+			let i = 1;
+			for (; true; i += iDir) {
+				let x = i * dirX + movedPos.x;
+				let y = i * dirY + movedPos.y;
+				if ((x >= 0 && y >= 0 && x < boardSize && y < boardSize) == false) {
+					if (iDir == 1) {
+						i = 0;
+						iDir = -1;
+						continue;
+					} else {
+						if (line.length >= minLineLength) {
+							return line;
+						} else {
+							return [];
+						}
+					}
+				}
+				if (board[x][y] == movedColor) {
+					line.push({ x, y });
+				} else {
+					if (iDir == 1) {
+						i = 0;
+						iDir = -1;
+					} else {
+						if (line.length >= minLineLength) {
+							return line;
+						} else {
+							return [];
+						}
+					}
+				}
+			}
+		}
+		let diagonal1 = checkInDirection(-1, 1);
+		let vertical = checkInDirection(0, 1);
+		let diagonal2 = checkInDirection(1, 1);
+		let horizontal = checkInDirection(1, 0);
+		let ballsToRemove = [...diagonal1, ...diagonal2, ...vertical, ...horizontal];
+		if (ballsToRemove.length > 0) {
+			let removedCount = 0;
+			ballsToRemove.forEach((ball) => {
+				if (board[ball.x][ball.y] == null) {
+					return;
+				}
+				board[ball.x][ball.y] = null;
+				this.tileNodes[ball.x][ball.y].innerHTML = '';
+				removedCount++;
+			});
+			this.setGameScore(this.currentScore + removedCount * removedCount);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private drawBoard() {
+		while (this.boardHTMLElement.firstChild) {
+			this.boardHTMLElement.removeChild(this.boardHTMLElement.firstChild);
+		}
+		this.board = [];
+		for (let i = 0; i < this.boardSize; i++) {
+			this.board.push(Array(this.boardSize).fill(null));
+		}
+		for (let i = 0; i < this.boardSize; i++) {
+			const row = document.createElement('div');
+			row.classList.add('board__row');
+			for (let j = 0; j < this.boardSize; j++) {
+				const tile = document.createElement('div');
+				tile.classList.add('board__row__tile');
+				j % 2 == 0
+					? tile.classList.add('board__row__tile__even')
+					: tile.classList.add('board__row__tile__odd');
+				tile.addEventListener('click', (event) => this.onTileClick(event));
+				tile.addEventListener('mouseover', (event) => this.onTileHover(event));
+				row.appendChild(tile);
+			}
+			this.boardHTMLElement.appendChild(row);
+		}
+		this.tileNodes = boardToTileNodeArray(this.boardHTMLElement, this.boardSize);
+	}
+
+	private drawPath(from: Position, to: Position) {
+		let path = this.aStarFinder.findPath(this.board, from, to, this.boardSize);
+		if (this.paintPathInput.checked) {
+			paintPath(path as any, this.tileNodes);
+		}
+		this.hoveredTile = { x: to.x, y: to.y, isPath: path.success };
+	}
+
+	private gameOver(): void {
+		this.saveScore(this.currentScore);
+		this.displayBestScore();
+		alert('Game over. Your score: ' + this.currentScore);
+	}
+
+	private saveScore(score: number): void {
+		try {
+			const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(this.localStorageKey) || '[]');
+			if (!Array.isArray(scores)) {
+				throw new Error('Invalid scores data in localStorage');
+			}
+			const recordIndex = scores.findIndex(
+				(scoreRecord) =>
+					scoreRecord.boardSize === this.boardSize && scoreRecord.numberOfColors === this.numberOfColors
+			);
+			const newRecord: ScoreRecord = {
+				dateAchieved: new Date().toISOString(),
+				score,
+				boardSize: this.boardSize,
+				numberOfColors: this.numberOfColors,
+			};
+			if (recordIndex === -1) {
+				scores.push(newRecord);
+			} else {
+				scores[recordIndex] = scores[recordIndex].score > score ? scores[recordIndex] : newRecord;
+			}
+			localStorage.setItem(this.localStorageKey, JSON.stringify(scores));
+		} catch (error) {
+			console.error('Failed to save score:', error);
+		}
+	}
+
+	private isBoardFull(): boolean {
+		return this.board.every((row) => {
+			return row.every((tile) => {
+				return tile != null;
+			});
+		});
+	}
+
+	private onTileClick(event: MouseEvent): void {
+		if (this.isGameOver) {
+			return;
+		}
+		const tile = getTileFromEventTarget(event.target as HTMLElement);
+		let clickedPos = getTilePosition(tile, this.boardHTMLElement, this.boardSize) as Position;
+		if (this.board[clickedPos.x][clickedPos.y]) {
+			document.querySelectorAll('.ball').forEach((el) => {
+				el.classList.remove('selected');
+			});
+			this.selectedTile = { x: clickedPos.x, y: clickedPos.y, htmlElement: tile };
+			this.selectedTile.htmlElement.children[0].classList.add('selected');
+		} else {
+			if (this.selectedTile && this.hoveredTile.isPath) {
+				const clickedTileNode = this.tileNodes[clickedPos.x][clickedPos.y];
+				const selectedTileNode = this.tileNodes[this.selectedTile.x][this.selectedTile.y];
+				const selectedBallColor = this.board[this.selectedTile.x][this.selectedTile.y];
+				clickedTileNode.appendChild(selectedTileNode.children[0]);
+				clickedTileNode.children[0].classList.remove('selected');
+				this.board[clickedPos.x][clickedPos.y] = selectedBallColor;
+				this.board[this.selectedTile.x][this.selectedTile.y] = null;
+				this.selectedTile = null;
+				clearPaths(this.tileNodes);
+				if (!this.checkFor5(clickedPos, this.board, selectedBallColor, this.boardSize) && !this.addNext3Balls()) {
+					this.gameOver();
+				}
+				this.randomNext3Colors();
+			}
+		}
+	}
+
+	private onTileHover(event: MouseEvent): void {
+		const isTargetTileEmpty =
+			(event.target as any).childNodes.length == 0 &&
+			!(event.target as any).classList.contains(CssClasses.ball);
+		if (this.selectedTile && isTargetTileEmpty) {
+			const tile = getTileFromEventTarget(event.target as any);
+			this.drawPath(this.selectedTile, getTilePosition(tile, this.boardHTMLElement, this.boardSize) as Position);
+		}
+	}
+
+	private randomNext3Colors(): void {
+		this.nextBallColors = Array.from({ length: 3 }, () => randomInt(1, this.numberOfColors));
+		this.nextBallColorHTMLElements.forEach((element, index) => {
+			element.className = '';
+			element.classList.add('color' + this.nextBallColors[index], 'nextBallColor');
+		});
+	}
+
+	private setGameScore(score: number): void {
+		this.currentScore = score;
+		this.currentScoreOutput.innerHTML = score + '';
+	}
+
+	private getBestScore(): number {
+		const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(this.localStorageKey) || '[]');
+		const bestScore = scores.find(
+			(scoreRecord) =>
+				scoreRecord.boardSize === this.boardSize && scoreRecord.numberOfColors === this.numberOfColors
+		);
+		return bestScore?.score || 0;
+	}
+
+	private displayBestScore(): void {
+		const bestScoreElement = document.querySelector('#bestScoreOutput') as HTMLSpanElement;
+		bestScoreElement.innerHTML = this.getBestScore() + '';
 	}
 }
 
-function randomNext3Colors(): void {
-	nextBallColors = Array.from({ length: 3 }, () => randomInt(1, numberOfColors));
-
-	nextBallColorHTMLElements.forEach((element, index) => {
-		element.className = '';
-		element.classList.add('color' + nextBallColors[index], 'nextBallColor');
-	});
-}
-
-function setGameScore(score: number): void {
-	currentScore = score;
-	currentScoreOutput.innerHTML = score + '';
-}
-
-function getBestScore(): number {
-	const scores: ScoreRecord[] = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
-
-	const bestScore = scores.find(
-		(scoreRecord) =>
-			scoreRecord.boardSize === boardSize && scoreRecord.numberOfColors === numberOfColors
-	);
-
-	return bestScore?.score || 0;
-}
-
-function displayBestScore(): void {
-	const bestScoreElement = document.querySelector('#bestScoreOutput') as HTMLSpanElement;
-	bestScoreElement.innerHTML = getBestScore() + '';
-}
+// Initialize the game
+const game = new Game();
