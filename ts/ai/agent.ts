@@ -26,8 +26,9 @@ class KulkiAIAgent {
                         [x + 1, y + 1], [x - 1, y - 1], [x + 1, y - 1], [x - 1, y + 1]
                     ];
                     for (const [nx, ny] of neighbors) {
-                        if (nx >= 0 && ny >= 0 && nx < board.length && ny < board.length && board[nx][ny] === 0) {
+                        if (nx >= 0 && ny >= 0 && nx < board.length && ny < board.length && (board[nx][ny] === 0 || board[nx][ny] === null)) {
                             const move = allpossiblemoves.find(m => board[m.from[0]][m.from[1]] === color && m.to[0] === nx && m.to[1] === ny);
+
                             if (move) return move;
                         }
                     }
