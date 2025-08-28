@@ -60,15 +60,17 @@ export function restartGame(): void {
 }
 
 /**
- * @returns a boolean informing whether all 3 balls were added
+ * @returns a boolean informing whether the board has space after adding balls
  */
 function addNext3Balls(): boolean {
 	const newlyAdded = [];
 
-	for (let i = 0; i < 3; ) {
-		if (isBoardFull()) {
-			return false; // board is full, game over
-		}
+	// Try to add up to 3 balls, but don't stop early if board gets full
+	let attempts = 0;
+	const maxAttempts = boardSize * boardSize; // prevent infinite loop
+
+	for (let i = 0; i < 3 && attempts < maxAttempts; ) {
+		attempts++;
 
 		// try to find a next free tile in the board
 		const posX = randomInt(0, boardSize - 1);
@@ -82,6 +84,11 @@ function addNext3Balls(): boolean {
 			board[posX][posY] = color;
 			newlyAdded.push({ posX, posY, color });
 			i++;
+		}
+
+		// If board is full, we can't add any more balls
+		if (isBoardFull()) {
+			break;
 		}
 	}
 
