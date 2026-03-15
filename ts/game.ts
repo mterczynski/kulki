@@ -62,35 +62,34 @@ export function restartGame(): void {
 /**
  * @returns a boolean informing whether all 3 balls were added
  */
-function addNext3Balls(): boolean {
+function addNext3Balls(): void {
 	const newlyAdded = [];
 
-	for (let i = 0; i < 3; ) {
-		if (isBoardFull()) {
-			return false; // board is full, game over
-		}
+	for (let i = 0; i < 3; i++) {
+		if (isBoardFull()) break;
 
-		// try to find a next free tile in the board
-		const posX = randomInt(0, boardSize - 1);
-		const posY = randomInt(0, boardSize - 1);
+		let posX: number;
+		let posY: number;
 
-		if (board[posX][posY] == null) {
-			const color = nextBallColors[i];
-			const ballNode = document.createElement('div');
-			ballNode.classList.add(CssClasses.ball, 'color' + nextBallColors[i]);
-			tileNodes[posX][posY].appendChild(ballNode);
-			board[posX][posY] = color;
-			newlyAdded.push({ posX, posY, color });
-			i++;
-		}
+		do {
+			posX = randomInt(0, boardSize - 1);
+			posY = randomInt(0, boardSize - 1);
+		} while (board[posX][posY] != null);
+
+		const color = nextBallColors[i];
+		const ballNode = document.createElement('div');
+		ballNode.classList.add(CssClasses.ball, 'color' + color);
+
+		tileNodes[posX][posY].appendChild(ballNode);
+		board[posX][posY] = color;
+
+		newlyAdded.push({ posX, posY, color });
 	}
 
-	// for every nextBall: check for 5+ in a row after adding it
 	newlyAdded.forEach((ball) => {
 		checkFor5({ x: ball.posX, y: ball.posY }, board, ball.color, boardSize);
 	});
 
-	return !isBoardFull();
 }
 
 /**
@@ -301,10 +300,18 @@ function onTileClick(event: MouseEvent): void {
 			selectedTile = null;
 
 			clearPaths(tileNodes);
-			if (!checkFor5(clickedPos, board, selectedBallColor, boardSize) && !addNext3Balls()) {
-				gameOver();
+			const removed = checkFor5(clickedPos, board, selectedBallColor, boardSize);
+
+			if (!removed) {
+				addNext3Balls();
 			}
+
 			randomNext3Colors();
+			setTimeout(() => {
+				if (isBoardFull()) {
+					gameOver();
+				}
+			}, 0);
 		}
 	}
 }
